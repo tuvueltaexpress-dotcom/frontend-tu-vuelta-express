@@ -185,7 +185,7 @@ export function AdminHeader({ onMenuClick }: { onMenuClick: () => void }) {
           onClick={onMenuClick}
           className="p-2 rounded-md lg:hidden hover:bg-accent dark:hover:bg-slate-800"
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-5 w-5 dark:text-white" />
         </button>
         <h1 className="text-lg font-semibold lg:hidden dark:text-white">Tu Vuelta Express</h1>
       </div>
