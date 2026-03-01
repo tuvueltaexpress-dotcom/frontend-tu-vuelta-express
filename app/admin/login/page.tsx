@@ -34,10 +34,7 @@ export default function LoginPage() {
 
   const validateLogin = () => {
     const newErrors: Record<string, string> = {}
-    if (!loginData.email) newErrors.email = "El correo es requerido"
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginData.email)) {
-      newErrors.email = "Correo inválido"
-    }
+    if (!loginData.email) newErrors.email = "El usuario es requerido"
     if (!loginData.password) newErrors.password = "La contraseña es requerida"
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -77,10 +74,19 @@ export default function LoginPage() {
     if (!validateLogin()) return
 
     setIsLoading(true)
-    setTimeout(() => {
-      setIsLoading(false)
+    try {
+      const response = await authApi.login({
+        username: loginData.email,
+        password: loginData.password,
+      })
+      localStorage.setItem("admin_token", response.token)
+      localStorage.setItem("admin_user", JSON.stringify(response.admin))
       router.push("/admin/panel")
-    }, 1000)
+    } catch (error) {
+      addToast(error instanceof Error ? error.message : "Error al iniciar sesión", "error")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -140,11 +146,11 @@ export default function LoginPage() {
               <TabsContent value="login" className="space-y-4">
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email">Correo electrónico</Label>
+                    <Label htmlFor="login-email">Usuario</Label>
                     <Input
                       id="login-email"
-                      type="email"
-                      placeholder="admin@ejemplo.com"
+                      type="text"
+                      placeholder="admin"
                       value={loginData.email}
                       onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                       className="h-11"

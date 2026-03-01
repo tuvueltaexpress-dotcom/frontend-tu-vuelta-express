@@ -78,7 +78,7 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
 
   const bgColors = {
     success: "bg-white dark:bg-slate-900 border-green-200 dark:border-green-800",
-    error: "bg-white dark:bg-slate-900 border-destructive/30",
+    error: "bg-white dark:bg-slate-900 border-destructive/30 dark:border-red-800/50",
     info: "bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800",
   }
 
@@ -88,10 +88,10 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
       role="alert"
     >
       {icons[toast.type]}
-      <p className="text-sm font-medium">{toast.message}</p>
+      <p className="text-sm font-medium text-foreground dark:text-gray-100">{toast.message}</p>
       <button
         onClick={onClose}
-        className="ml-2 p-1 hover:bg-black/5 dark:hover:bg-white/10 rounded transition-colors"
+        className="ml-auto p-1 hover:bg-black/5 dark:hover:bg-white/10 rounded transition-colors text-muted-foreground dark:text-gray-400"
       >
         <X className="h-4 w-4" />
       </button>

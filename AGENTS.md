@@ -34,20 +34,29 @@ frontend/
 │   │       ├── login/
 │   │       │   └── page.tsx
 │   │       └── panel/
-│   │           └── page.tsx
+│   │           ├── layout.tsx  # Layout admin con sidebar
+│   │           └── page.tsx    # Dashboard
 │   ├── api/                   # API routes (Route Handlers)
 │   ├── layout.tsx            # Root layout
 │   ├── globals.css
 │   └── page.tsx              # Redirect to (routes)
 ├── components/
 │   ├── ui/                   # Componentes shadcn/base
+│   │   ├── button.tsx
+│   │   ├── input.tsx
+│   │   ├── label.tsx
+│   │   ├── card.tsx
+│   │   ├── tabs.tsx
+│   │   └── toast.tsx
 │   ├── shared/               # Componentes compartidos
-│   └── features/             # Componentes por feature
+│   └── admin/
+│       └── sidebar.tsx        # Sidebar admin con menú
 ├── lib/
 │   ├── api.ts               # Funciones API
+│   ├── use-auth.tsx         # Hook de autenticación
 │   └── utils.ts             # Utilidades (cn)
 ├── stores/                   # Zustand stores
-├── types/                    # Tipos TypeScript
+├── types/                   # Tipos TypeScript
 └── public/
 ```
 
@@ -324,10 +333,57 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 
 | Ruta | Componente | Tipo |
 |------|------------|------|
-| `/` | Dashboard | Server Component |
+| `/` | Dashboard público | Server Component |
 | `/aliados/[id]` | Página de tienda | Server Component |
 | `/admin/login` | Login admin | Client Component |
-| `/admin/panel` | Panel admin | Server Component (protegido) |
+| `/admin/panel` | Dashboard admin | Client Component (protegido) |
+| `/admin/panel/aliados` | Lista de aliados | - |
+| `/admin/panel/aliados/categorias` | Categorías de aliados | - |
+| `/admin/panel/productos` | Lista de productos | - |
+| `/admin/panel/productos/categorias` | Categorías de productos | - |
+| `/admin/panel/delivery-zonas` | Zonas de delivery | - |
+
+---
+
+## Autenticación
+
+### Protección de Rutas
+
+```typescript
+// lib/use-auth.tsx
+import { useAuth, ProtectedRoute } from '@/lib/use-auth'
+
+// Usar en layouts o páginas
+export default function AdminLayout({ children }) {
+  return (
+    <ProtectedRoute>
+      {children}
+    </ProtectedRoute>
+  )
+}
+```
+
+### Login
+
+```typescript
+// Guardar token tras login
+localStorage.setItem('admin_token', response.token)
+localStorage.setItem('admin_user', JSON.stringify(response.admin))
+
+// Recuperar en API
+const token = localStorage.getItem('admin_token')
+headers: { Authorization: `Bearer ${token}` }
+```
+
+### Logout
+
+```typescript
+const logout = () => {
+  localStorage.removeItem('admin_token')
+  localStorage.removeItem('admin_user')
+  window.location.href = '/admin/login'
+}
+```
 
 ---
 
@@ -339,11 +395,13 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
+| POST | `/admin/login` | Login admin |
+| POST | `/admin/register` | Registro admin |
+| GET | `/admin/dashboard` | Estadísticas del dashboard |
 | GET | `/stores` | Listar tiendas |
 | GET | `/stores/:id` | Detalle tienda |
 | GET | `/stores/:id/products` | Productos por tienda |
-| GET | `/products-categories` | Categorías |
-| POST | `/admin/login` | Login admin |
+| GET | `/products-categories` | Categorías de productos |
 
 ---
 
@@ -385,18 +443,26 @@ if (!store) notFound()
 
 ## Roadmap
 
-### Fase 1 (En progreso)
+### Fase 1: Panel de Administración
 - [x] Setup Next.js + Tailwind + shadcn
-- [ ] Dashboard con lista de tiendas
+- [x] Login/Registro admin
+- [x] Dashboard con estadísticas
+- [x] Sidebar con menú de navegación
+- [ ] CRUD Aliados (lista, crear, editar, eliminar)
+- [ ] CRUD Categorías de Aliados
+- [ ] CRUD Productos
+- [ ] CRUD Categorías de Productos
+- [ ] CRUD Zonas de Delivery
+
+### Fase 2: Web Pública
+- [ ] Landing page / Dashboard público
+- [ ] Página de aliados
 - [ ] Página de detalle de tienda
 - [ ] Carrito de compras
-- [ ] Integración WhatsApp
+- [ ] Integración WhatsApp para pedidos
+- [ ] Navegación mobile
 
-### Fase 2
-- [ ] Panel de administración
-- [ ] Login admin
-- [ ] CRUD de tiendas/productos
-
-### Fase 3
-- [ ] Sistema de usuarios
+### Fase 3: Extras
+- [ ] Sistema de usuarios (clientes)
 - [ ] Historial de pedidos
+- [ ] Notificaciones
