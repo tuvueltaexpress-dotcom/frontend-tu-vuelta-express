@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { ChevronDown, ChevronRight, Menu, X, LogOut, Sun, Moon } from "lucide-react"
+import { ChevronDown, ChevronRight, Menu, X, LogOut, Sun, Moon, PanelLeftClose, PanelLeftOpen, FolderClosed } from "lucide-react"
 import { useState } from "react"
 import { useAuth } from "@/lib/use-auth"
 import { useTheme } from "@/lib/use-theme"
@@ -16,6 +16,7 @@ export interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     label: "Aliados",
+    icon: <StoreIcon />,
     children: [
       { label: "Aliados", href: "/admin/panel/aliados", icon: <StoreIcon /> },
       { label: "Subcategorías Aliados", href: "/admin/panel/aliados/categorias", icon: <FolderIcon /> },
@@ -76,7 +77,15 @@ function DashboardIcon() {
   )
 }
 
-export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export function Sidebar({ 
+  isOpen, 
+  onClose,
+  expanded = true 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void;
+  expanded?: boolean;
+}) {
   const pathname = usePathname()
 
   return (
@@ -89,38 +98,70 @@ export function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       )}
       <aside
         className={cn(
-          "fixed top-0 left-0 z-50 h-full w-64 bg-background dark:bg-slate-900 border-r dark:border-slate-800 transform transition-transform duration-200 lg:translate-x-0",
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          "fixed top-0 left-0 z-50 h-full bg-background dark:bg-slate-900 border-r dark:border-slate-800 transform transition-all duration-200",
+          expanded ? "w-64 lg:translate-x-0" : "w-16 lg:translate-x-0",
+          isOpen ? "translate-x-0" : "-translate-x-full lg:block hidden"
         )}
       >
-        <div className="flex items-center justify-between h-16 px-4 border-b dark:border-slate-800">
-          <Link href="/admin/panel" className="flex items-center gap-2 font-semibold">
-            <span className="text-xl dark:text-white">Tu Vuelta Express</span>
-          </Link>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-md lg:hidden hover:bg-accent dark:hover:bg-slate-800"
-          >
-            <X className="h-5 w-5" />
-          </button>
+        <div className={cn(
+          "flex items-center h-16 border-b dark:border-slate-800 px-4",
+          expanded ? "justify-between" : "justify-center"
+        )}>
+          {expanded ? (
+            <>
+              <Link href="/admin/panel" className="flex items-center gap-2 font-semibold">
+                <span className="text-xl dark:text-white">Tu Vuelta Express</span>
+              </Link>
+              <button
+                onClick={onClose}
+                className="p-2 rounded-md lg:hidden hover:bg-accent dark:hover:bg-slate-800"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </>
+          ) : (
+            <Link href="/admin/panel" className="flex items-center justify-center w-full font-semibold">
+              <span className="text-xl dark:text-white">T</span>
+            </Link>
+          )}
         </div>
-        <nav className="p-4 space-y-2">
-          <Link
-            href="/admin/panel"
-            className={cn(
-              "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-              pathname === "/admin/panel"
-                ? "bg-primary text-primary-foreground"
-                : "hover:bg-accent dark:hover:bg-slate-800"
-            )}
-          >
-            <DashboardIcon />
-            Dashboard
-          </Link>
-          {menuItems.map((item) => (
-            <MenuDropdown key={item.label} item={item} pathname={pathname} />
-          ))}
-        </nav>
+        {expanded ? (
+          <nav className="p-4 space-y-2">
+            <Link
+              href="/admin/panel"
+              className={cn(
+                "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                pathname === "/admin/panel"
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-accent dark:hover:bg-slate-800"
+              )}
+            >
+              <DashboardIcon />
+              Dashboard
+            </Link>
+            {menuItems.map((item) => (
+              <MenuDropdown key={item.label} item={item} pathname={pathname} />
+            ))}
+          </nav>
+        ) : (
+          <nav className="p-2 space-y-2">
+            <Link
+              href="/admin/panel"
+              className={cn(
+                "flex items-center justify-center p-2 rounded-md text-sm font-medium transition-colors",
+                pathname === "/admin/panel"
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-accent dark:hover:bg-slate-800"
+              )}
+              title="Dashboard"
+            >
+              <DashboardIcon />
+            </Link>
+            {menuItems.map((item) => (
+              <MenuDropdownCollapsed key={item.label} item={item} pathname={pathname} />
+            ))}
+          </nav>
+        )}
       </aside>
     </>
   )
@@ -144,7 +185,10 @@ function MenuDropdown({ item, pathname }: { item: MenuItem; pathname: string }) 
             : "hover:bg-accent dark:hover:bg-slate-800 dark:text-gray-200"
         )}
       >
-        <span>{item.label}</span>
+        <div className="flex items-center gap-3">
+          {item.icon}
+          <span>{item.label}</span>
+        </div>
         {isOpen ? (
           <ChevronDown className="h-4 w-4" />
         ) : (
@@ -174,7 +218,68 @@ function MenuDropdown({ item, pathname }: { item: MenuItem; pathname: string }) 
   )
 }
 
-export function AdminHeader({ onMenuClick }: { onMenuClick: () => void }) {
+function MenuDropdownCollapsed({ item, pathname }: { item: MenuItem; pathname: string }) {
+  const [isOpen, setIsOpen] = useState(() => {
+    return item.children?.some((child) => pathname.startsWith(child.href || "")) ?? false
+  })
+
+  const hasActiveChild = item.children?.some((child) => pathname.startsWith(child.href || ""))
+
+  return (
+    <div className="relative group">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={cn(
+          "flex items-center justify-center p-2 rounded-md text-sm font-medium transition-colors w-full",
+          hasActiveChild
+            ? "bg-primary/10 text-primary dark:text-primary-foreground"
+            : "hover:bg-accent dark:hover:bg-slate-800"
+        )}
+        title={item.label}
+      >
+        {item.icon ? (
+          <span className={hasActiveChild ? "text-primary dark:text-primary-foreground" : "dark:text-gray-300"}>
+            {item.icon}
+          </span>
+        ) : (
+          <FolderClosed className={hasActiveChild ? "text-primary dark:text-primary-foreground" : "dark:text-gray-300"} />
+        )}
+      </button>
+      {isOpen && item.children && (
+        <div className="absolute left-full top-0 ml-1 bg-background dark:bg-slate-800 border dark:border-slate-700 rounded-md shadow-lg p-2 min-w-[180px] z-50">
+          <p className="text-xs font-semibold text-muted-foreground dark:text-gray-400 px-2 pb-2 border-b dark:border-slate-700 mb-2">
+            {item.label}
+          </p>
+          {item.children.map((child) => (
+            <Link
+              key={child.href}
+              href={child.href || "#"}
+              className={cn(
+                "flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors",
+                pathname === child.href
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-accent dark:hover:bg-slate-700 dark:text-gray-200"
+              )}
+            >
+              {child.icon}
+              {child.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function AdminHeader({ 
+  onMenuClick,
+  onToggleSidebar,
+  sidebarExpanded 
+}: { 
+  onMenuClick: () => void;
+  onToggleSidebar?: () => void;
+  sidebarExpanded?: boolean;
+}) {
   const { admin, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
 
@@ -186,6 +291,17 @@ export function AdminHeader({ onMenuClick }: { onMenuClick: () => void }) {
           className="p-2 rounded-md lg:hidden hover:bg-accent dark:hover:bg-slate-800"
         >
           <Menu className="h-5 w-5 dark:text-white" />
+        </button>
+        <button
+          onClick={onToggleSidebar}
+          className="hidden lg:flex p-2 rounded-md hover:bg-accent dark:hover:bg-slate-800 transition-colors"
+          title={sidebarExpanded ? "Ocultar sidebar" : "Mostrar sidebar"}
+        >
+          {sidebarExpanded ? (
+            <PanelLeftClose className="h-5 w-5 dark:text-gray-300" />
+          ) : (
+            <PanelLeftOpen className="h-5 w-5 dark:text-gray-300" />
+          )}
         </button>
         <h1 className="text-lg font-semibold lg:hidden dark:text-white">Tu Vuelta Express</h1>
       </div>
