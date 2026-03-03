@@ -2,7 +2,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { ChevronDown, ChevronRight, Menu, X, LogOut, Sun, Moon, PanelLeftClose, PanelLeftOpen, FolderClosed } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useAuth } from "@/lib/use-auth"
 import { useTheme } from "@/lib/use-theme"
 
@@ -19,9 +19,9 @@ const menuItems: MenuItem[] = [
     icon: <StoreIcon />,
     children: [
       { label: "Aliados", href: "/admin/panel/aliados", icon: <StoreIcon /> },
-      { label: "Subcategorías Aliados", href: "/admin/panel/aliados/categorias", icon: <FolderIcon /> },
+      { label: "Categorías Aliados", href: "/admin/panel/aliados/categorias", icon: <FolderIcon /> },
       { label: "Productos", href: "/admin/panel/productos", icon: <PackageIcon /> },
-      { label: "Subcategorías Productos", href: "/admin/panel/productos/categorias", icon: <FolderIcon /> },
+      { label: "Categorías Productos", href: "/admin/panel/productos/categorias", icon: <FolderIcon /> },
       { label: "Zonas delivery", href: "/admin/panel/delivery-zonas", icon: <MapPinIcon /> },
     ],
   },
@@ -181,7 +181,7 @@ function MenuDropdown({ item, pathname }: { item: MenuItem; pathname: string }) 
         className={cn(
           "flex items-center justify-between w-full gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
           hasActiveChild
-            ? "bg-primary/10 text-primary dark:text-primary-foreground"
+            ? "bg-primary text-primary-foreground"
             : "hover:bg-accent dark:hover:bg-slate-800 dark:text-gray-200"
         )}
       >
@@ -219,30 +219,45 @@ function MenuDropdown({ item, pathname }: { item: MenuItem; pathname: string }) 
 }
 
 function MenuDropdownCollapsed({ item, pathname }: { item: MenuItem; pathname: string }) {
-  const [isOpen, setIsOpen] = useState(() => {
-    return item.children?.some((child) => pathname.startsWith(child.href || "")) ?? false
-  })
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   const hasActiveChild = item.children?.some((child) => pathname.startsWith(child.href || ""))
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen])
+
   return (
-    <div className="relative group">
+    <div className="relative group" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           "flex items-center justify-center p-2 rounded-md text-sm font-medium transition-colors w-full",
           hasActiveChild
-            ? "bg-primary/10 text-primary dark:text-primary-foreground"
+            ? "bg-primary text-primary-foreground"
             : "hover:bg-accent dark:hover:bg-slate-800"
         )}
         title={item.label}
       >
         {item.icon ? (
-          <span className={hasActiveChild ? "text-primary dark:text-primary-foreground" : "dark:text-gray-300"}>
+          <span className={hasActiveChild ? "text-primary-foreground" : "dark:text-gray-300"}>
             {item.icon}
           </span>
         ) : (
-          <FolderClosed className={hasActiveChild ? "text-primary dark:text-primary-foreground" : "dark:text-gray-300"} />
+          <FolderClosed className={hasActiveChild ? "text-primary-foreground" : "dark:text-gray-300"} />
         )}
       </button>
       {isOpen && item.children && (

@@ -47,7 +47,8 @@ frontend/
 │   │   ├── label.tsx
 │   │   ├── card.tsx
 │   │   ├── tabs.tsx
-│   │   └── toast.tsx
+│   │   ├── toast.tsx
+│   │   └── textarea.tsx
 │   ├── shared/               # Componentes compartidos
 │   └── admin/
 │       └── sidebar.tsx        # Sidebar admin con menú
@@ -337,11 +338,11 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 | `/aliados/[id]` | Página de tienda | Server Component |
 | `/admin/login` | Login admin | Client Component |
 | `/admin/panel` | Dashboard admin | Client Component (protegido) |
-| `/admin/panel/aliados` | Lista de aliados | - |
-| `/admin/panel/aliados/categorias` | Categorías de aliados | - |
-| `/admin/panel/productos` | Lista de productos | - |
-| `/admin/panel/productos/categorias` | Categorías de productos | - |
-| `/admin/panel/delivery-zonas` | Zonas de delivery | - |
+| `/admin/panel/aliados` | Lista de aliados | Client Component |
+| `/admin/panel/aliados/categorias` | Categorías de aliados | Client Component |
+| `/admin/panel/productos` | Lista de productos | Client Component |
+| `/admin/panel/productos/categorias` | Categorías de productos | Client Component |
+| `/admin/panel/delivery-zonas` | Zonas de delivery | Client Component |
 
 ---
 
@@ -402,6 +403,23 @@ const logout = () => {
 | GET | `/stores/:id` | Detalle tienda |
 | GET | `/stores/:id/products` | Productos por tienda |
 | GET | `/products-categories` | Categorías de productos |
+| GET | `/stores-categories` | Categorías de tiendas |
+| GET | `/delivery-options` | Opciones de delivery |
+| POST | `/stores` | Crear tienda |
+| PUT | `/stores/:id` | Actualizar tienda |
+| DELETE | `/stores/:id` | Eliminar tienda |
+| POST | `/stores-categories` | Crear categoría de tienda |
+| PUT | `/stores-categories/:id` | Actualizar categoría de tienda |
+| DELETE | `/stores-categories/:id` | Eliminar categoría de tienda |
+| POST | `/products` | Crear producto |
+| PUT | `/products/:id` | Actualizar producto |
+| DELETE | `/products/:id` | Eliminar producto |
+| POST | `/products-categories` | Crear categoría de producto |
+| PUT | `/products-categories/:id` | Actualizar categoría de producto |
+| DELETE | `/products-categories/:id` | Eliminar categoría de producto |
+| POST | `/delivery-options` | Crear opción de delivery |
+| PUT | `/delivery-options/:id` | Actualizar opción de delivery |
+| DELETE | `/delivery-options/:id` | Eliminar opción de delivery |
 
 ---
 
@@ -448,11 +466,11 @@ if (!store) notFound()
 - [x] Login/Registro admin
 - [x] Dashboard con estadísticas
 - [x] Sidebar con menú de navegación
-- [ ] CRUD Aliados (lista, crear, editar, eliminar)
-- [ ] CRUD Categorías de Aliados
-- [ ] CRUD Productos
-- [ ] CRUD Categorías de Productos
-- [ ] CRUD Zonas de Delivery
+- [x] CRUD Aliados (lista, crear, editar, eliminar)
+- [x] CRUD Categorías de Aliados
+- [x] CRUD Productos
+- [x] CRUD Categorías de Productos
+- [x] CRUD Zonas de Delivery
 
 ### Fase 2: Web Pública
 - [ ] Landing page / Dashboard público
