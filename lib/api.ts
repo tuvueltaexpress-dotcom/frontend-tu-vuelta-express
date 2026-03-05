@@ -53,6 +53,39 @@ export interface RegisterResponse {
   message: string
 }
 
+export interface PartnerLoginResponse {
+  token: string
+  partner: {
+    id: number
+    email: string
+    businessName: string
+    phone: string
+    status: string
+  }
+}
+
+export interface PartnerRegisterRequest {
+  email: string
+  password: string
+  businessName: string
+  phone: string
+}
+
+export interface PartnerRegisterResponse {
+  message: string
+  status: string
+}
+
+export interface Partner {
+  id: number
+  email: string
+  businessName: string
+  phone: string
+  status: string
+  createdAt: string
+  updatedAt: string
+}
+
 export interface DashboardStats {
   storesCount: number
   productsCount: number
@@ -93,6 +126,20 @@ export const authApi = {
       method: "POST",
       body: JSON.stringify(data),
     }),
+
+  partners: {
+    login: (credentials: { email: string; password: string }) =>
+      fetchAPI<PartnerLoginResponse>("/partners/login", {
+        method: "POST",
+        body: JSON.stringify(credentials),
+      }),
+
+    register: (data: PartnerRegisterRequest) =>
+      fetchAPI<PartnerRegisterResponse>("/partners/register", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+  },
 }
 
 export interface StoreCategory {
@@ -236,6 +283,19 @@ export const adminApi = {
     delete: (id: number) =>
       fetchAPI<{ message: string }>(`/delivery-options/${id}`, {
         method: "DELETE",
+      }),
+  },
+
+  partners: {
+    listPending: () =>
+      fetchAPI<Partner[]>("/admin/partners/pending"),
+    approve: (id: number) =>
+      fetchAPI<{ message: string }>(`/admin/partners/${id}/approve`, {
+        method: "PATCH",
+      }),
+    reject: (id: number) =>
+      fetchAPI<{ message: string }>(`/admin/partners/${id}/reject`, {
+        method: "PATCH",
       }),
   },
 }

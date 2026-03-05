@@ -8,15 +8,15 @@ Frontend de Tu Vuelta Express construido con Next.js 16, TypeScript y Tailwind C
 
 ## Tecnologías
 
-| Categoría | Tecnología |
-|-----------|------------|
-| Framework | Next.js 16 (App Router) |
-| Lenguaje | TypeScript 5 |
-| Estilos | Tailwind CSS v4 |
-| UI Components | shadcn/ui + Radix UI |
-| Carruseles | Swiper |
-| Estado Global | Zustand |
-| HTTP | fetch nativo |
+| Categoría     | Tecnología              |
+| ------------- | ----------------------- |
+| Framework     | Next.js 16 (App Router) |
+| Lenguaje      | TypeScript 5            |
+| Estilos       | Tailwind CSS v4         |
+| UI Components | shadcn/ui + Radix UI    |
+| Carruseles    | Swiper                  |
+| Estado Global | Zustand                 |
+| HTTP          | fetch nativo            |
 
 ---
 
@@ -67,14 +67,14 @@ frontend/
 
 ### Naming
 
-| Tipo | Formato | Ejemplo |
-|------|---------|---------|
-| Componentes | PascalCase | `StoreCard.tsx` |
-| Hooks | camelCase + prefijo `use` | `useCartStore.ts` |
-| Utilidades | camelCase | `api.ts`, `utils.ts` |
-| Types/Interfaces | PascalCase | `CartItem` |
-| Constantes | UPPER_SNAKE_CASE | `API_ENDPOINTS` |
-| Archivos de página | kebab-case | `admin-panel.tsx` |
+| Tipo               | Formato                   | Ejemplo              |
+| ------------------ | ------------------------- | -------------------- |
+| Componentes        | PascalCase                | `StoreCard.tsx`      |
+| Hooks              | camelCase + prefijo `use` | `useCartStore.ts`    |
+| Utilidades         | camelCase                 | `api.ts`, `utils.ts` |
+| Types/Interfaces   | PascalCase                | `CartItem`           |
+| Constantes         | UPPER_SNAKE_CASE          | `API_ENDPOINTS`      |
+| Archivos de página | kebab-case                | `admin-panel.tsx`    |
 
 ### Reglas de Código
 
@@ -94,12 +94,12 @@ frontend/
 // 4. Types
 // 5. Utils/stores
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { StoreCard } from '@/components/shared/StoreCard'
-import type { Store } from '@/types'
-import { cn } from '@/lib/utils'
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { StoreCard } from '@/components/shared/StoreCard';
+import type { Store } from '@/types';
+import { cn } from '@/lib/utils';
 ```
 
 ---
@@ -125,6 +125,7 @@ export function AddToCartButton({ productId }: { productId: string }) {
 ```
 
 **Usar Client Components solo cuando:**
+
 - Usar hooks de React (`useState`, `useEffect`, `useRef`)
 - Usar event handlers (`onClick`, `onChange`)
 - Usar browser APIs (localStorage, window)
@@ -136,73 +137,81 @@ export function AddToCartButton({ productId }: { productId: string }) {
 ```typescript
 // ✅ Server Component: fetch directo
 async function getStore(id: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${id}`)
-  if (!res.ok) throw new Error('Failed to fetch store')
-  return res.json()
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stores/${id}`);
+  if (!res.ok) throw new Error('Failed to fetch store');
+  return res.json();
 }
 
 // ✅ Con caching (default en Next.js)
-const res = await fetch(`${API_URL}/stores`, { cache: 'force-cache' })
+const res = await fetch(`${API_URL}/stores`, { cache: 'force-cache' });
 
 // ✅ SSR (dynamic)
-const res = await fetch(`${API_URL}/stores`, { cache: 'no-store' })
+const res = await fetch(`${API_URL}/stores`, { cache: 'no-store' });
 ```
 
 ### Manejo de Estado (Zustand)
 
 ```typescript
 // stores/useCartStore.ts
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface CartItem {
-  id: string
-  productId: string
-  quantity: number
-  price: number
-  name: string
+  id: string;
+  productId: string;
+  quantity: number;
+  price: number;
+  name: string;
 }
 
 interface CartStore {
-  items: CartItem[]
-  addItem: (item: Omit<CartItem, 'id'>) => void
-  removeItem: (productId: string) => void
-  updateQuantity: (productId: string, quantity: number) => void
-  clear: () => void
-  total: () => number
+  items: CartItem[];
+  addItem: (item: Omit<CartItem, 'id'>) => void;
+  removeItem: (productId: string) => void;
+  updateQuantity: (productId: string, quantity: number) => void;
+  clear: () => void;
+  total: () => number;
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
-      addItem: (item) => set((state) => {
-        const existing = state.items.find(i => i.productId === item.productId)
-        if (existing) {
-          return {
-            items: state.items.map(i =>
-              i.productId === item.productId
-                ? { ...i, quantity: i.quantity + item.quantity }
-                : i
-            )
+      addItem: (item) =>
+        set((state) => {
+          const existing = state.items.find(
+            (i) => i.productId === item.productId,
+          );
+          if (existing) {
+            return {
+              items: state.items.map((i) =>
+                i.productId === item.productId
+                  ? { ...i, quantity: i.quantity + item.quantity }
+                  : i,
+              ),
+            };
           }
-        }
-        return { items: [...state.items, { ...item, id: crypto.randomUUID() }] }
-      }),
-      removeItem: (productId) => set((state) => ({
-        items: state.items.filter(i => i.productId !== productId)
-      })),
-      updateQuantity: (productId, quantity) => set((state) => ({
-        items: state.items.map(i =>
-          i.productId === productId ? { ...i, quantity } : i
-        )
-      })),
+          return {
+            items: [...state.items, { ...item, id: crypto.randomUUID() }],
+          };
+        }),
+      removeItem: (productId) =>
+        set((state) => ({
+          items: state.items.filter((i) => i.productId !== productId),
+        })),
+      updateQuantity: (productId, quantity) =>
+        set((state) => ({
+          items: state.items.map((i) =>
+            i.productId === productId ? { ...i, quantity } : i,
+          ),
+        })),
       clear: () => set({ items: [] }),
-      total: () => get().items.reduce((sum, i) => sum + i.price * i.quantity, 0)
+      total: () =>
+        get().items.reduce((sum, i) => sum + i.price * i.quantity, 0),
     }),
-    { name: 'cart-storage' }
-  )
-)
+    { name: 'cart-storage' },
+  ),
+);
 ```
 
 ### Patrón de Componentes UI
@@ -260,30 +269,32 @@ export function Button({ className, variant, size, ...props }: ButtonProps) {
 
 ```typescript
 // lib/api.ts
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const token = typeof window !== 'undefined' 
-    ? localStorage.getItem('admin_token') 
-    : null
+async function fetchAPI<T>(
+  endpoint: string,
+  options?: RequestInit,
+): Promise<T> {
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
 
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
     ...(token && { Authorization: `Bearer ${token}` }),
     ...options?.headers,
-  }
+  };
 
   const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers,
-  })
+  });
 
   if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: 'Request failed' }))
-    throw new Error(error.message)
+    const error = await res.json().catch(() => ({ message: 'Request failed' }));
+    throw new Error(error.message);
   }
 
-  return res.json()
+  return res.json();
 }
 
 export const api = {
@@ -302,7 +313,7 @@ export const api = {
         body: JSON.stringify(credentials),
       }),
   },
-}
+};
 ```
 
 ---
@@ -321,28 +332,36 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
 
 ## Scripts Disponibles
 
-| Script | Comando | Descripción |
-|--------|---------|-------------|
-| `dev` | `next dev` | Servidor desarrollo |
-| `build` | `next build` | Build producción |
+| Script  | Comando      | Descripción         |
+| ------- | ------------ | ------------------- |
+| `dev`   | `next dev`   | Servidor desarrollo |
+| `build` | `next build` | Build producción    |
 | `start` | `next start` | Servidor producción |
-| `lint` | `next lint` | ESLint |
+| `lint`  | `next lint`  | ESLint              |
 
 ---
 
 ## Rutas
 
-| Ruta | Componente | Tipo |
-|------|------------|------|
-| `/` | Dashboard público | Server Component |
-| `/aliados/[id]` | Página de tienda | Server Component |
-| `/admin/login` | Login admin | Client Component |
-| `/admin/panel` | Dashboard admin | Client Component (protegido) |
-| `/admin/panel/aliados` | Lista de aliados | Client Component |
-| `/admin/panel/aliados/categorias` | Categorías de aliados | Client Component |
-| `/admin/panel/productos` | Lista de productos | Client Component |
-| `/admin/panel/productos/categorias` | Categorías de productos | Client Component |
-| `/admin/panel/delivery-zonas` | Zonas de delivery | Client Component |
+| Ruta                                | Componente                        | Tipo                         |
+| ----------------------------------- | --------------------------------- | ---------------------------- |
+| `/`                                 | Dashboard público                 | Server Component             |
+| `/aliados/[id]`                     | Página de tienda                  | Server Component             |
+| `/admin/login`                      | Login admin                       | Client Component             |
+| `/admin/panel`                      | Dashboard admin                   | Client Component (protegido) |
+| `/admin/panel/aliados`              | Lista de aliados                  | Client Component             |
+| `/admin/panel/aliados/categorias`   | Categorías de aliados             | Client Component             |
+| `/admin/panel/productos`            | Lista de productos                | Client Component             |
+| `/admin/panel/productos/categorias` | Categorías de productos           | Client Component             |
+| `/admin/panel/delivery-zonas`       | Zonas de delivery                 | Client Component             |
+| `/admin/panel/partners/pendientes`  | Partners pendientes de aprobación | Client Component             |
+| `/partners/register`                | Registro de partners              | Client Component             |
+| `/partners/login`                   | Login de partners                 | Client Component             |
+| `/partners/panel`                   | Dashboard partner (protegido)     | Client Component             |
+| `/partners/panel/tienda`            | Gestión de tienda                 | Client Component             |
+| `/partners/panel/productos`         | Gestión de productos              | Client Component             |
+| `/partners/panel/delivery`          | Gestión de delivery               | Client Component             |
+| `/partners/panel/perfil`            | Perfil del partner                | Client Component             |
 
 ---
 
@@ -368,22 +387,24 @@ export default function AdminLayout({ children }) {
 
 ```typescript
 // Guardar token tras login
-localStorage.setItem('admin_token', response.token)
-localStorage.setItem('admin_user', JSON.stringify(response.admin))
+localStorage.setItem('admin_token', response.token);
+localStorage.setItem('admin_user', JSON.stringify(response.admin));
 
 // Recuperar en API
-const token = localStorage.getItem('admin_token')
-headers: { Authorization: `Bearer ${token}` }
+const token = localStorage.getItem('admin_token');
+headers: {
+  Authorization: `Bearer ${token}`;
+}
 ```
 
 ### Logout
 
 ```typescript
 const logout = () => {
-  localStorage.removeItem('admin_token')
-  localStorage.removeItem('admin_user')
-  window.location.href = '/admin/login'
-}
+  localStorage.removeItem('admin_token');
+  localStorage.removeItem('admin_user');
+  window.location.href = '/admin/login';
+};
 ```
 
 ---
@@ -394,32 +415,96 @@ const logout = () => {
 - **Autenticación:** JWT (header `Authorization: Bearer <token>`)
 - **Endpoints principales:**
 
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST | `/admin/login` | Login admin |
-| POST | `/admin/register` | Registro admin |
-| GET | `/admin/dashboard` | Estadísticas del dashboard |
-| GET | `/stores` | Listar tiendas |
-| GET | `/stores/:id` | Detalle tienda |
-| GET | `/stores/:id/products` | Productos por tienda |
-| GET | `/products-categories` | Categorías de productos |
-| GET | `/stores-categories` | Categorías de tiendas |
-| GET | `/delivery-options` | Opciones de delivery |
-| POST | `/stores` | Crear tienda |
-| PUT | `/stores/:id` | Actualizar tienda |
-| DELETE | `/stores/:id` | Eliminar tienda |
-| POST | `/stores-categories` | Crear categoría de tienda |
-| PUT | `/stores-categories/:id` | Actualizar categoría de tienda |
-| DELETE | `/stores-categories/:id` | Eliminar categoría de tienda |
-| POST | `/products` | Crear producto |
-| PUT | `/products/:id` | Actualizar producto |
-| DELETE | `/products/:id` | Eliminar producto |
-| POST | `/products-categories` | Crear categoría de producto |
-| PUT | `/products-categories/:id` | Actualizar categoría de producto |
-| DELETE | `/products-categories/:id` | Eliminar categoría de producto |
-| POST | `/delivery-options` | Crear opción de delivery |
-| PUT | `/delivery-options/:id` | Actualizar opción de delivery |
-| DELETE | `/delivery-options/:id` | Eliminar opción de delivery |
+### Autenticación
+
+| Método | Endpoint             | Descripción         |
+| ------ | -------------------- | ------------------- |
+| POST   | `/admin/login`       | Login admin         |
+| POST   | `/admin/register`    | Registro admin      |
+| POST   | `/partners/register` | Registro de partner |
+| POST   | `/partners/login`    | Login de partner    |
+| GET    | `/partners/profile`  | Perfil del partner  |
+
+### Dashboard
+
+| Método | Endpoint              | Descripción                        |
+| ------ | --------------------- | ---------------------------------- |
+| GET    | `/admin/dashboard`    | Estadísticas del dashboard admin   |
+| GET    | `/partners/dashboard` | Estadísticas del dashboard partner |
+
+### Partners (Admin)
+
+| Método | Endpoint                      | Descripción                |
+| ------ | ----------------------------- | -------------------------- |
+| GET    | `/admin/partners/pending`     | Listar partners pendientes |
+| PATCH  | `/admin/partners/:id/approve` | Aprobar partner            |
+| PATCH  | `/admin/partners/:id/reject`  | Rechazar partner           |
+
+### Tiendas
+
+| Método | Endpoint               | Descripción                 |
+| ------ | ---------------------- | --------------------------- |
+| GET    | `/stores`              | Listar tiendas              |
+| GET    | `/stores/:id`          | Detalle tienda              |
+| GET    | `/stores/:id/products` | Productos por tienda        |
+| POST   | `/stores`              | Crear tienda (admin)        |
+| PUT    | `/stores/:id`          | Actualizar tienda           |
+| DELETE | `/stores/:id`          | Eliminar tienda             |
+| POST   | `/partners/store`      | Crear tienda (partner)      |
+| GET    | `/partners/store`      | Obtener mi tienda (partner) |
+| PUT    | `/partners/store/:id`  | Actualizar tienda (partner) |
+
+### Categorías de Tiendas
+
+| Método | Endpoint                 | Descripción          |
+| ------ | ------------------------ | -------------------- |
+| GET    | `/stores-categories`     | Listar categorías    |
+| POST   | `/stores-categories`     | Crear categoría      |
+| PUT    | `/stores-categories/:id` | Actualizar categoría |
+| DELETE | `/stores-categories/:id` | Eliminar categoría   |
+
+### Productos
+
+| Método | Endpoint                   | Descripción                    |
+| ------ | -------------------------- | ------------------------------ |
+| GET    | `/products`                | Listar productos               |
+| GET    | `/products/store/:storeId` | Productos por tienda           |
+| GET    | `/products/:id`            | Detalle producto               |
+| POST   | `/products`                | Crear producto                 |
+| PUT    | `/products/:id`            | Actualizar producto            |
+| DELETE | `/products/:id`            | Eliminar producto              |
+| POST   | `/partners/products`       | Crear producto (partner)       |
+| GET    | `/partners/products`       | Listar mis productos (partner) |
+| PUT    | `/partners/products/:id`   | Actualizar producto (partner)  |
+| DELETE | `/partners/products/:id`   | Eliminar producto (partner)    |
+
+### Categorías de Productos
+
+| Método | Endpoint                              | Descripción                     |
+| ------ | ------------------------------------- | ------------------------------- |
+| GET    | `/products-categories`                | Listar categorías               |
+| GET    | `/products-categories/store/:storeId` | Categorías por tienda           |
+| POST   | `/products-categories`                | Crear categoría                 |
+| PUT    | `/products-categories/:id`            | Actualizar categoría            |
+| DELETE | `/products-categories/:id`            | Eliminar categoría              |
+| POST   | `/partners/products-categories`       | Crear categoría (partner)       |
+| GET    | `/partners/products-categories`       | Listar mis categorías (partner) |
+| PUT    | `/partners/products-categories/:id`   | Actualizar categoría (partner)  |
+| DELETE | `/partners/products-categories/:id`   | Eliminar categoría (partner)    |
+
+### Opciones de Delivery
+
+| Método | Endpoint                           | Descripción                   |
+| ------ | ---------------------------------- | ----------------------------- |
+| GET    | `/delivery-options`                | Listar opciones de delivery   |
+| GET    | `/delivery-options/store/:storeId` | Opciones por tienda           |
+| POST   | `/delivery-options`                | Crear opción de delivery      |
+| PUT    | `/delivery-options/:id`            | Actualizar opción             |
+| DELETE | `/delivery-options/:id`            | Eliminar opción               |
+| POST   | `/partners/delivery-options`       | Crear opción (partner)        |
+| GET    | `/partners/delivery-options`       | Listar mis opciones (partner) |
+| PUT    | `/partners/delivery-options/:id`   | Actualizar opción (partner)   |
+| DELETE | `/partners/delivery-options/:id`   | Eliminar opción (partner)     |
 
 ---
 
@@ -451,10 +536,10 @@ export default function Error({
 
 ```typescript
 // En Server Components
-import { notFound } from 'next/navigation'
+import { notFound } from 'next/navigation';
 
-const store = await getStore(id)
-if (!store) notFound()
+const store = await getStore(id);
+if (!store) notFound();
 ```
 
 ---
@@ -462,6 +547,7 @@ if (!store) notFound()
 ## Roadmap
 
 ### Fase 1: Panel de Administración
+
 - [x] Setup Next.js + Tailwind + shadcn
 - [x] Login/Registro admin
 - [x] Dashboard con estadísticas
@@ -472,7 +558,33 @@ if (!store) notFound()
 - [x] CRUD Categorías de Productos
 - [x] CRUD Zonas de Delivery
 
-### Fase 2: Web Pública
+### Fase 2: Sistema de Partners (Aliados)
+
+- [x] Página de registro y login público de partners (`/partners/login`)
+- [x] Integración API registro de partners
+- [x] Validaciones de registro (email, password, businessName, phone)
+- [x] Mensaje de "pendiente de aprobación" tras registro
+- [x] Integración API login de partners
+- [x] Página de login de partners (`/partners/login`)
+- [ ] Dashboard del partner
+- [ ] Protección de rutas de partners (token JWT)
+- [ ] Flujo condicional: Si no tiene tienda → formulario crear tienda
+- [ ] Si tiene tienda → acceso a gestión de tienda
+- [ ] CRUD Productos (Partner)
+- [ ] CRUD Categorías de Productos (Partner)
+- [ ] CRUD Opciones de Delivery (Partner)
+- [ ] Actualizar datos de perfil del partner
+- [ ] Actualizar datos de la tienda
+- [ ] Página pública del aliado (ya existente en `/aliados/[id]`)
+
+### Fase 3: Aprobación de Partners (Admin)
+
+- [x] Listar partners pendientes de aprobación
+- [x] Botón aprobar partner
+- [x] Botón rechazar partner
+
+### Fase 4: Web Pública
+
 - [ ] Landing page / Dashboard público
 - [ ] Página de aliados
 - [ ] Página de detalle de tienda
@@ -480,7 +592,8 @@ if (!store) notFound()
 - [ ] Integración WhatsApp para pedidos
 - [ ] Navegación mobile
 
-### Fase 3: Extras
+### Fase 5: Extras
+
 - [ ] Sistema de usuarios (clientes)
 - [ ] Historial de pedidos
 - [ ] Notificaciones
