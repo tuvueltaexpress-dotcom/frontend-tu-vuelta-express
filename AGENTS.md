@@ -566,8 +566,8 @@ if (!store) notFound();
 - [x] Mensaje de "pendiente de aprobación" tras registro
 - [x] Integración API login de partners
 - [x] Página de login de partners (`/partners/login`)
-- [ ] Dashboard del partner
-- [ ] Protección de rutas de partners (token JWT)
+- [x] Dashboard del partner
+- [x] Protección de rutas de partners (token JWT)
 - [ ] Flujo condicional: Si no tiene tienda → formulario crear tienda
 - [ ] Si tiene tienda → acceso a gestión de tienda
 - [ ] CRUD Productos (Partner)

@@ -6,18 +6,19 @@ interface ApiError {
   errors?: string[]
 }
 
-function getAuthHeaders(): HeadersInit {
+function getAuthHeaders(authType: 'admin' | 'partner' = 'admin'): HeadersInit {
   if (typeof window === "undefined") return {}
-  const token = localStorage.getItem("admin_token")
+  const tokenKey = authType === 'partner' ? "partner_token" : "admin_token"
+  const token = localStorage.getItem(tokenKey)
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
-async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<T> {
+async function fetchAPI<T>(endpoint: string, options?: RequestInit, authType: 'admin' | 'partner' = 'admin'): Promise<T> {
   const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      ...getAuthHeaders(),
+      ...getAuthHeaders(authType),
       ...options?.headers,
     },
   })
@@ -86,6 +87,28 @@ export interface Partner {
   updatedAt: string
 }
 
+export interface PartnerStore {
+  id: number
+  name: string
+  image: string
+  coverImage: string
+  ha: string
+  hc: string
+  categoryId: number
+  category?: { id: number; name: string }
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PartnerDashboardStats {
+  store: PartnerStore | null
+  stats: {
+    productsCount: number
+    categoriesCount: number
+    deliveryOptionsCount: number
+  }
+}
+
 export interface DashboardStats {
   storesCount: number
   productsCount: number
@@ -139,6 +162,9 @@ export const authApi = {
         method: "POST",
         body: JSON.stringify(data),
       }),
+
+    getDashboard: () =>
+      fetchAPI<PartnerDashboardStats>("/partners/dashboard", undefined, 'partner'),
   },
 }
 
