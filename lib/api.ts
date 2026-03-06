@@ -207,6 +207,60 @@ export const partnerApi = {
         body: JSON.stringify(data),
       }, 'partner'),
   },
+  products: {
+    list: (page = 1, limit = 20) =>
+      fetchAPI<PaginatedResponse<Product>>(`/partners/products?page=${page}&limit=${limit}`, undefined, 'partner'),
+    create: (data: { title: string; price: number; images: string[]; description: string; categoryId: number }) =>
+      fetchAPI<Product>("/partners/products", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }, 'partner'),
+    update: (id: number, data: { title?: string; price?: number; images?: string[]; description?: string; categoryId?: number }) =>
+      fetchAPI<Product>(`/partners/products/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }, 'partner'),
+    delete: (id: number) =>
+      fetchAPI<{ message: string }>(`/partners/products/${id}`, {
+        method: "DELETE",
+      }, 'partner'),
+  },
+  productsCategories: {
+    list: () =>
+      fetchAPI<ProductCategory[]>("/partners/products-categories", undefined, 'partner'),
+    create: (data: { name: string }) =>
+      fetchAPI<ProductCategory>("/partners/products-categories", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }, 'partner'),
+    update: (id: number, data: { name?: string }) =>
+      fetchAPI<ProductCategory>(`/partners/products-categories/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }, 'partner'),
+    delete: (id: number) =>
+      fetchAPI<{ message: string }>(`/partners/products-categories/${id}`, {
+        method: "DELETE",
+      }, 'partner'),
+  },
+  deliveryOptions: {
+    list: () =>
+      fetchAPI<DeliveryOption[]>("/partners/delivery-options", undefined, 'partner'),
+    create: (data: { name: string; fee: number }) =>
+      fetchAPI<DeliveryOption>("/partners/delivery-options", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }, 'partner'),
+    update: (id: number, data: { name?: string; fee?: number }) =>
+      fetchAPI<DeliveryOption>(`/partners/delivery-options/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }, 'partner'),
+    delete: (id: number) =>
+      fetchAPI<{ message: string }>(`/partners/delivery-options/${id}`, {
+        method: "DELETE",
+      }, 'partner'),
+  },
   getStoreCategories: async () => {
     const data = await fetchAPI<PaginatedResponse<StoreCategory>>("/stores-categories?page=1&limit=100", undefined, 'partner')
     return { data: data.data }

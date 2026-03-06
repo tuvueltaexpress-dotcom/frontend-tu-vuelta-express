@@ -571,8 +571,8 @@ if (!store) notFound();
 - [x] Flujo condicional: Si no tiene tienda → formulario crear tienda
 - [x] Si tiene tienda → acceso a gestión de tienda
 - [x] Actualizar datos de la tienda
-- [ ] CRUD Productos (Partner)
-- [ ] CRUD Categorías de Productos (Partner)
+- [x] CRUD Productos (Partner)
+- [x] CRUD Categorías de Productos (Partner)
 - [ ] CRUD Opciones de Delivery (Partner)
 - [ ] Pagina de perfil con los datos generales del perfil del partner
 
