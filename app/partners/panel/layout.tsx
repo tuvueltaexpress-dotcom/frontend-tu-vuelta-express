@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { ProtectedPartnerRoute } from '@/lib/use-partner-auth'
 import { usePartnerAuth } from '@/lib/use-partner-auth'
+import { useTheme } from '@/lib/use-theme'
 import { 
   LayoutDashboard, 
   Store, 
@@ -48,6 +49,11 @@ const menuItems: MenuItem[] = [
     icon: <PackageIcon />,
   },
   {
+    label: "Categorías",
+    href: "/partners/panel/productos/categorias",
+    icon: <FolderIcon />,
+  },
+  {
     label: "Delivery",
     href: "/partners/panel/delivery",
     icon: <TruckIcon />,
@@ -77,6 +83,14 @@ function PackageIcon() {
       <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
       <path d="M3.29 7 12 12l8.71-5" />
       <path d="M12 22V12" />
+    </svg>
+  )
+}
+
+function FolderIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" />
     </svg>
   )
 }
@@ -213,6 +227,7 @@ function PartnerHeader({
   sidebarExpanded?: boolean;
 }) {
   const { partner, logout } = usePartnerAuth()
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <header className="sticky top-0 z-30 h-16 bg-background/95 dark:bg-slate-900/95 backdrop-blur border-b dark:border-slate-800 px-4 lg:px-8 flex items-center justify-between">
@@ -237,6 +252,13 @@ function PartnerHeader({
         <h1 className="text-lg font-semibold lg:hidden dark:text-white">Tu Vuelta Express</h1>
       </div>
       <div className="flex items-center gap-2">
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-md hover:bg-accent dark:hover:bg-slate-800 text-muted-foreground hover:text-foreground transition-colors"
+          title={theme === "light" ? "Modo oscuro" : "Modo claro"}
+        >
+          {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+        </button>
         <div className="hidden sm:flex items-center gap-2 text-sm">
           <span className="text-muted-foreground dark:text-gray-400">Hola,</span>
           <span className="font-medium dark:text-white">{partner?.businessName}</span>

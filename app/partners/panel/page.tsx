@@ -23,11 +23,18 @@ export default function PartnerDashboardPage() {
       const dashboardData = await authApi.partners.getDashboard()
       setData(dashboardData)
     } catch (err) {
-      addToast(err instanceof Error ? err.message : 'Error al cargar dashboard', 'error')
+      const error = err as Error & { statusCode?: number }
+      if (error.statusCode === 404) {
+        window.location.href = '/partners/panel/tienda'
+        return
+      }
+      addToast(error.message || 'Error al cargar dashboard', 'error')
     } finally {
       setLoading(false)
     }
   }
+
+  const hasStore = data?.store !== null
 
   if (loading) {
     return (
@@ -37,7 +44,9 @@ export default function PartnerDashboardPage() {
     )
   }
 
-  const hasStore = data?.store !== null
+  if (!hasStore) {
+    return null
+  }
 
   return (
     <div className="space-y-6">
@@ -56,7 +65,7 @@ export default function PartnerDashboardPage() {
                 <Store className="h-8 w-8 text-amber-600 dark:text-amber-400" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold">¡Crea tu tienda!</h2>
+                <h2 className="text-xl font-semibold dark:text-white">¡Crea tu tienda!</h2>
                 <p className="text-muted-foreground mt-1">
                   Aún no tienes una tienda registrada. Comienza a vender hoy.
                 </p>
@@ -73,7 +82,7 @@ export default function PartnerDashboardPage() {
       ) : (
         <>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
+            <Card className="dark:bg-slate-900">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Productos
@@ -81,13 +90,13 @@ export default function PartnerDashboardPage() {
                 <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{data?.stats.productsCount}</div>
+                <div className="text-2xl font-bold dark:text-white">{data?.stats.productsCount}</div>
                 <p className="text-xs text-muted-foreground">
                   En tu catálogo
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="dark:bg-slate-900">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Categorías
@@ -95,13 +104,13 @@ export default function PartnerDashboardPage() {
                 <Folder className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{data?.stats.categoriesCount}</div>
+                <div className="text-2xl font-bold dark:text-white">{data?.stats.categoriesCount}</div>
                 <p className="text-xs text-muted-foreground">
                   De productos
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="dark:bg-slate-900">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Opciones de Delivery
@@ -109,13 +118,13 @@ export default function PartnerDashboardPage() {
                 <Truck className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{data?.stats.deliveryOptionsCount}</div>
+                <div className="text-2xl font-bold dark:text-white">{data?.stats.deliveryOptionsCount}</div>
                 <p className="text-xs text-muted-foreground">
                   Configuradas
                 </p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="dark:bg-slate-900">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Tu Tienda
@@ -123,7 +132,7 @@ export default function PartnerDashboardPage() {
                 <Store className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-lg font-bold truncate">{data?.store?.name}</div>
+                <div className="text-lg font-bold truncate dark:text-white">{data?.store?.name}</div>
                 <p className="text-xs text-muted-foreground">
                   {data?.store?.category?.name}
                 </p>
@@ -133,7 +142,7 @@ export default function PartnerDashboardPage() {
 
           <div className="grid gap-4 md:grid-cols-3">
             <Link href="/partners/panel/tienda">
-              <Card className="hover:bg-accent/50 transition-colors cursor-pointer">
+              <Card className="hover:bg-accent/50 transition-colors cursor-pointer dark:bg-slate-900">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0">
                   <CardTitle className="text-base">Mi Tienda</CardTitle>
                   <Store className="h-4 w-4 text-muted-foreground" />
@@ -146,7 +155,7 @@ export default function PartnerDashboardPage() {
               </Card>
             </Link>
             <Link href="/partners/panel/productos">
-              <Card className="hover:bg-accent/50 transition-colors cursor-pointer">
+              <Card className="hover:bg-accent/50 transition-colors cursor-pointer dark:bg-slate-900">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0">
                   <CardTitle className="text-base">Productos</CardTitle>
                   <Package className="h-4 w-4 text-muted-foreground" />
@@ -159,7 +168,7 @@ export default function PartnerDashboardPage() {
               </Card>
             </Link>
             <Link href="/partners/panel/delivery">
-              <Card className="hover:bg-accent/50 transition-colors cursor-pointer">
+              <Card className="hover:bg-accent/50 transition-colors cursor-pointer dark:bg-slate-900">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0">
                   <CardTitle className="text-base">Delivery</CardTitle>
                   <Truck className="h-4 w-4 text-muted-foreground" />

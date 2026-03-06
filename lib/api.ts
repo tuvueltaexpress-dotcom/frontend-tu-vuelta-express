@@ -28,7 +28,9 @@ async function fetchAPI<T>(endpoint: string, options?: RequestInit, authType: 'a
       message: "Error en la solicitud",
     }))
     const errorMessage = error.errors?.[0] || error.message
-    throw new Error(errorMessage)
+    const err = new Error(errorMessage)
+    ;(err as any).statusCode = res.status
+    throw err
   }
 
   return res.json()
@@ -165,6 +167,49 @@ export const authApi = {
 
     getDashboard: () =>
       fetchAPI<PartnerDashboardStats>("/partners/dashboard", undefined, 'partner'),
+  },
+}
+
+export interface PartnerStoreRequest {
+  name: string
+  image: string
+  coverImage?: string
+  categoryId: number
+  ha?: string
+  hc?: string
+}
+
+export interface PartnerStoreResponse {
+  id: number
+  name: string
+  image: string
+  coverImage: string
+  ha: string
+  hc: string
+  categoryId: number
+  category?: { id: number; name: string }
+  createdAt: string
+  updatedAt: string
+}
+
+export const partnerApi = {
+  store: {
+    get: () =>
+      fetchAPI<PartnerStoreResponse | null>("/partners/store", undefined, 'partner'),
+    create: (data: PartnerStoreRequest) =>
+      fetchAPI<PartnerStoreResponse>("/partners/store", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }, 'partner'),
+    update: (id: number, data: Partial<PartnerStoreRequest>) =>
+      fetchAPI<PartnerStoreResponse>(`/partners/store/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }, 'partner'),
+  },
+  getStoreCategories: async () => {
+    const data = await fetchAPI<PaginatedResponse<StoreCategory>>("/stores-categories?page=1&limit=100", undefined, 'partner')
+    return { data: data.data }
   },
 }
 

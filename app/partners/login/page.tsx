@@ -239,7 +239,7 @@ export default function PartnerLoginPage() {
                     <Input
                       id="register-phone"
                       type="tel"
-                      placeholder="+54 9 11 1234 5678"
+                      placeholder="+584121234567"
                       value={registerData.phone}
                       onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
                       className="h-11"

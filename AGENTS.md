@@ -568,14 +568,13 @@ if (!store) notFound();
 - [x] Página de login de partners (`/partners/login`)
 - [x] Dashboard del partner
 - [x] Protección de rutas de partners (token JWT)
-- [ ] Flujo condicional: Si no tiene tienda → formulario crear tienda
-- [ ] Si tiene tienda → acceso a gestión de tienda
+- [x] Flujo condicional: Si no tiene tienda → formulario crear tienda
+- [x] Si tiene tienda → acceso a gestión de tienda
+- [x] Actualizar datos de la tienda
 - [ ] CRUD Productos (Partner)
 - [ ] CRUD Categorías de Productos (Partner)
 - [ ] CRUD Opciones de Delivery (Partner)
-- [ ] Actualizar datos de perfil del partner
-- [ ] Actualizar datos de la tienda
-- [ ] Página pública del aliado (ya existente en `/aliados/[id]`)
+- [ ] Pagina de perfil con los datos generales del perfil del partner
 
 ### Fase 3: Aprobación de Partners (Admin)
 
