@@ -13,8 +13,12 @@ const navLinks = [
 ];
 
 export function Navbar() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, mounted } = useTheme();
   const [cartCount] = useState(0);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <>
@@ -84,7 +88,7 @@ export function Navbar() {
         </div>
       </header>
 
-      <div className="w-full border-b border-slate-200 bg-slate-50 dark:bg-slate-950 dark:border-slate-800 py-4 md:hidden">
+      <div className="w-full border-b border-slate-200 bg-white dark:bg-slate-950 dark:border-slate-800 py-4 md:hidden">
         <div className="flex items-center justify-between gap-4 px-4">
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center gap-2">

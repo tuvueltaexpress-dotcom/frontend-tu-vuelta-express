@@ -1,5 +1,3 @@
-import { Navbar } from '@/components/shared/navbar';
-import { BottomNav } from '@/components/shared/bottom-nav';
 import { Search, Store, ShoppingCart } from 'lucide-react';
 
 const categories = [
@@ -134,8 +132,6 @@ export default function HomePage() {
           </div>
         </section>
       </main>
-
-      <BottomNav />
     </div>
   );
 }

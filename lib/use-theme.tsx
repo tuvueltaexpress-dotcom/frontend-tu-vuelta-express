@@ -7,6 +7,7 @@ type Theme = "light" | "dark"
 interface ThemeContextValue {
   theme: Theme
   toggleTheme: () => void
+  mounted: boolean
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
@@ -19,7 +20,13 @@ function getInitialTheme(): Theme {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme)
+  const [theme, setTheme] = useState<Theme>("light")
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setTheme(getInitialTheme())
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark")
@@ -34,7 +41,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, mounted }}>
       {children}
     </ThemeContext.Provider>
   )

@@ -2,12 +2,16 @@
 
 import Link from "next/link";
 import { useTheme } from "@/lib/use-theme";
-import { Home, ShoppingCart, Moon, Sun, Search } from "lucide-react";
+import { Home, ShoppingCart, Moon, Sun } from "lucide-react";
 import { useState } from "react";
 
 export function BottomNav() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, mounted } = useTheme();
   const [cartCount] = useState(3);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-950/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 md:hidden pb-safe">
