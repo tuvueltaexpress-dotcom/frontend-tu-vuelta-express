@@ -424,3 +424,61 @@ export const adminApi = {
       }),
   },
 }
+
+async function fetchPublicAPI<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  })
+
+  if (!res.ok) {
+    const error: ApiError = await res.json().catch(() => ({
+      message: "Error en la solicitud",
+    }))
+    const errorMessage = error.errors?.[0] || error.message
+    const err = new Error(errorMessage)
+    ;(err as any).statusCode = res.status
+    throw err
+  }
+
+  return res.json()
+}
+
+export interface SearchResult {
+  stores: Store[]
+  products: Product[]
+  pagination: {
+    stores: {
+      total: number
+      page: number
+      limit: number
+      totalPages: number
+    }
+    products: {
+      total: number
+      page: number
+      limit: number
+      totalPages: number
+    }
+  }
+}
+
+export const publicApi = {
+  search: (query: string, type: 'stores' | 'products' | 'all' = 'all', page = 1, limit = 20) =>
+    fetchPublicAPI<SearchResult>(`/search?q=${encodeURIComponent(query)}&type=${type}&page=${page}&limit=${limit}`),
+  
+  stores: {
+    list: (page = 1, limit = 20, categoryId?: number) =>
+      fetchPublicAPI<PaginatedResponse<Store>>(`/stores?page=${page}&limit=${limit}${categoryId ? `&categoryId=${categoryId}` : ''}`),
+    get: (id: number) => fetchPublicAPI<Store>(`/stores/${id}`),
+  },
+  
+  storesCategories: {
+    list: (page = 1, limit = 20) =>
+      fetchPublicAPI<PaginatedResponse<StoreCategory>>(`/stores-categories?page=${page}&limit=${limit}`),
+    get: (id: number) => fetchPublicAPI<StoreCategory>(`/stores-categories/${id}`),
+  },
+}

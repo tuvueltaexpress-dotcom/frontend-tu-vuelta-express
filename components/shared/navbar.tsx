@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "@/lib/use-theme";
 import { Button } from "@/components/ui/button";
+import { SearchModal } from "./search-modal";
 import { Search, ShoppingCart, Sun, Moon, Store } from "lucide-react";
 
 const navLinks = [
@@ -15,6 +16,7 @@ const navLinks = [
 export function Navbar() {
   const { theme, toggleTheme, mounted } = useTheme();
   const [cartCount] = useState(0);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   if (!mounted) {
     return null;
@@ -51,6 +53,7 @@ export function Navbar() {
             <Button
               variant="ghost"
               size="icon"
+              onClick={() => setIsSearchOpen(true)}
               className="cursor-pointer p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
               aria-label="Buscar"
             >
@@ -87,6 +90,8 @@ export function Navbar() {
           </div>
         </div>
       </header>
+
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       <div className="w-full border-b border-slate-200 bg-white dark:bg-slate-950 dark:border-slate-800 py-4 md:hidden">
         <div className="flex items-center justify-between gap-4 px-4">
