@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { Navbar } from "@/components/shared/navbar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "JF3 Delivery Services",
-  description: "Plataforma de delivery - Compra comida a tus tiendas favoritas",
+  title: "Tu Vuelta Express - Delivery a tu medida",
+  description: "Pedidos delivery a tus tiendas favoritas",
 };
 
 export default function RootLayout({
@@ -29,6 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
+          <Navbar />
           {children}
         </Providers>
       </body>

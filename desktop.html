@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MultiMarket | MVP Esencial</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0F172A",
+                        "secondary": "#334155",
+                        "accent": "#0369A1",
+                        "background": "#F8FAFC",
+                        "text-main": "#020617",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        :root {
+            --primary: oklch(0.175 0 0);
+            --secondary: oklch(0.214 0 0);
+            --accent: oklch(0.548 0.196 187.337);
+            --background: oklch(0.985 0 0);
+            --text-main: oklch(0.067 0 0);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text-main);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-text-main min-h-screen">
+<header class="sticky top-0 z-50 bg-white border-b border-slate-200 px-6 lg:px-12 py-4">
+<div class="max-w-[1440px] mx-auto flex items-center justify-between gap-8">
+<div class="flex items-center gap-2 shrink-0">
+<div class="bg-primary p-2 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-2xl">shopping_basket</span>
+</div>
+<h1 class="text-2xl font-bold tracking-tight text-primary">MultiMarket</h1>
+</div>
+<div class="flex-1 max-w-[600px]">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-accent transition-colors">search</span>
+<input class="w-full h-12 pl-12 pr-4 bg-slate-100 border-none rounded-xl focus:ring-2 focus:ring-accent focus:bg-white transition-all text-sm outline-none" placeholder="Buscar productos o tiendas..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4 shrink-0">
+<button class="p-2.5 rounded-xl bg-slate-100 text-secondary hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">light_mode</span>
+</button>
+<button class="relative p-2.5 rounded-xl bg-slate-100 text-secondary hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white ring-2 ring-white">3</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto px-6 lg:px-12 py-8">
+<section class="mb-12">
+<div class="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
+<button class="px-6 py-2.5 bg-primary text-white font-semibold rounded-full whitespace-nowrap">Todas</button>
+<button class="px-6 py-2.5 bg-white text-secondary border border-slate-200 hover:border-accent hover:text-accent transition-colors font-medium rounded-full whitespace-nowrap">Alimentos</button>
+<button class="px-6 py-2.5 bg-white text-secondary border border-slate-200 hover:border-accent hover:text-accent transition-colors font-medium rounded-full whitespace-nowrap">Moda</button>
+<button class="px-6 py-2.5 bg-white text-secondary border border-slate-200 hover:border-accent hover:text-accent transition-colors font-medium rounded-full whitespace-nowrap">Electrónica</button>
+<button class="px-6 py-2.5 bg-white text-secondary border border-slate-200 hover:border-accent hover:text-accent transition-colors font-medium rounded-full whitespace-nowrap">Hogar</button>
+<button class="px-6 py-2.5 bg-white text-secondary border border-slate-200 hover:border-accent hover:text-accent transition-colors font-medium rounded-full whitespace-nowrap">Servicios</button>
+</div>
+</section>
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="text-2xl font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-accent">storefront</span> Tiendas Aliadas
+            </h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<div class="bg-white rounded-xl overflow-hidden border border-slate-200 hover:shadow-lg transition-all flex flex-col group">
+<div class="relative h-44">
+<img alt="Fondo Tienda" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVM48exOyRcwjsn56KOi7iVunJKnc2YUnr8HELB5GZ9XAaAjUHf4z7GAlbQM04JHplnJKMum5KHKUIydTFLau4SRj1PzTo9ooRV_q0AqLPmKVljprSVSWHImAXSkQ0Y-tx4KohUDTmZZVdLxvVdc1Do1OCb1bkLhnEQ4yMQjpFbGBdw-Ba4SP6RzQW_lWHvM2tTBi1WHEk3hD1VkTIQBNYwucpsJhWUfEHmH4ZhdwDRPVnbIc3bCy3kZ0P_L3uQlijPLMXRxlU9qM"/>
+<div class="absolute -bottom-6 left-4 w-16 h-16 rounded-xl border-4 border-white overflow-hidden bg-white shadow-md z-10">
+<img alt="Logo Tienda" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPs1YgKlzl9tKu7mAcoWd2VXj7m_6jYvuBNR65St9GudzyjIyK3DOIt_OPFySPCLnZ8dzbL8dLm6AAgrb-6HjpPPPCbc_suCVo8avcM5mrCJIpsz4L2AOcxzgj7YCySDZ9KPDc6eJXIAZ1DiIuoTGlG-zTCGlQIs7qNA0ZwJW3qdiGXSQ5gjuxdPXLX55n18YX_Hm-XIrB7KYq1NkF-iWZ6_4b4n8JpI36CSJ9w85O_mWPqN55TjcgqKC8SnmGfzZI0V4IXJlY9Xw"/>
+</div>
+</div>
+<div class="pt-8 pb-6 px-5 flex-1 flex flex-col">
+<h4 class="font-bold text-lg text-text-main mb-1">Taco King</h4>
+<p class="text-xs font-semibold text-accent uppercase tracking-wider">Comida Mexicana</p>
+</div>
+</div>
+<div class="bg-white rounded-xl overflow-hidden border border-slate-200 hover:shadow-lg transition-all flex flex-col">
+<div class="relative h-44">
+<img alt="Fondo Tienda" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvBdxj899LtOWOx_NO5EYsEQFPPxQtHtlUZMdEXLOCsY7nQy4jOiM-kkuFfBikWX_C-MQSK20YYzmbaDYxpwHs65UND_ePqXEmG8Hm_hyONdH24-B5az4AfUxiu_J5UR86c2QdghTvqPzAtAiTG0g5iwNZzVCyDxsftX38ZhQjdvMLQewZ2Ny9XBgqfZ0ZyW19xaOxOcfpXrrAzofcoBwJgbwtKf6YixclLvmtMWMI1X6gmov8mmtLhArwsIQSqIcIgpLCfQKXaQE"/>
+<div class="absolute inset-0 bg-slate-900/60 flex items-center justify-center backdrop-blur-[1px]">
+<span class="text-white font-bold text-xl drop-shadow-md">Cerrado ⏱</span>
+</div>
+<div class="absolute -bottom-6 left-4 w-16 h-16 rounded-xl border-4 border-white overflow-hidden bg-white shadow-md z-10 grayscale">
+<img alt="Logo Tienda" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiz35fWcbcsPPzukqRSAb_BbYwVYbpgIFvz2-AX6Isd7xn0CZN_w-RfvNJQo3UeXq0Inqywf0k8nYTwpXlaX5GDAEOAFTIKgGkBxHVsmDwxFTKPQlhnyMWYCmOoGqA001k5Q1xGIRuNzvOgm6t8-jSUacFRWCteDFudPVLHfvgyNpAGB9u8E9HZviPwYv7JUxDEoWo66p7QteBBF-nU7HXTvv5iMYN-uwZiS-YbC5unf8iDOBA-lykQ3A2iQjIkR3uKbS_PhDXIPw"/>
+</div>
+</div>
+<div class="pt-8 pb-6 px-5 flex-1 flex flex-col opacity-75">
+<h4 class="font-bold text-lg text-text-main mb-1">Pizza Art</h4>
+<p class="text-xs font-semibold text-accent uppercase tracking-wider">Alimentos</p>
+</div>
+</div>
+<div class="bg-white rounded-xl overflow-hidden border border-slate-200 hover:shadow-lg transition-all flex flex-col">
+<div class="relative h-44">
+<img alt="Fondo Tienda" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgtX2E2dsv0oZt6pLHktyaHjENK7zF4qaxki-XZnwZb81R7dRWw2QNE6X3RDWiHbdkG2Kii2mvnEBXa9j_XVL5Vq3vtTCRxWuxGASzL9jkV8xdGEvhaz3PT4kGNnN7tc2BsJy8x_z437EwvC9_jaQi8DL1466BgWqS7At6xyvhhGQkGqrq8MQ9v-Njh8s7D9yiJKo21xmPpXrYt-Thscfi_EyUz9X6k17gC051z9-swUW9esCui9KJ8Wf33adgSX0LGOpVgL9zlws"/>
+<div class="absolute -bottom-6 left-4 w-16 h-16 rounded-xl border-4 border-white overflow-hidden bg-white shadow-md z-10">
+<img alt="Logo Tienda" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsNmAS6PAgVcHn4gHJbqm41K4iS2SjBy_-V6NmHXa0RyRYvPaWnm-Imc4T584tS09emT4-BasV-uQEnZfyuzHPNVg1DWFRHkc7b1EXJKDioDL5DHUL-TatYHFgA4RY5zSedc2V4Bn_IJ8hhUdfQfT3jDUPnmZ-cPDF313iD24x6WFzQg5OXrPtWhpnzIlEtmZPlmzNGeB7peZP08QcW9fgyMWK7GrWR8-mXM4mLdagQpbLT_yrwrrCE_5XubxW7mnXRDmFT-lGX0U"/>
+</div>
+</div>
+<div class="pt-8 pb-6 px-5 flex-1 flex flex-col">
+<h4 class="font-bold text-lg text-text-main mb-1">Burger Loft</h4>
+<p class="text-xs font-semibold text-accent uppercase tracking-wider">Alimentos</p>
+</div>
+</div>
+<div class="bg-white rounded-xl overflow-hidden border border-slate-200 hover:shadow-lg transition-all flex flex-col">
+<div class="relative h-44">
+<img alt="Fondo Tienda" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABFMBP4eUfeSGiykThJ56zulre-KgWAWfzeOmof5eUW0eBeUEiivK3_w-nz8xkA6Ij5nVm34VjUbIpBPK9K_8onmAc9bME7ljD8LC9MeZkEXsXCRIz3384vwnqo2O-U11QfBNWrn_JceGr1IHzlU_AYCdqQkhtpuWV6S8WtgVZ5k-ICFVvc2lvV56QdgF4GKopcab5WHwEr9DR9qlju_ciCXwIcxGdhbtAvjWWLPKFlDdXc5R_pv7k04yd3GfzFkkrS6wiIUtv9A0"/>
+<div class="absolute inset-0 bg-slate-900/60 flex items-center justify-center backdrop-blur-[1px]">
+<span class="text-white font-bold text-xl drop-shadow-md">Cerrado ⏱</span>
+</div>
+<div class="absolute -bottom-6 left-4 w-16 h-16 rounded-xl border-4 border-white overflow-hidden bg-white shadow-md z-10 grayscale">
+<img alt="Logo Tienda" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3odmKLgCoFBaZs3aQlekgI7kOf6_lIejzYY2YIjnVtJcalxyZoVQPivw_6YfTQt59Pcac1ZTb_d7P4DP3eUY9jwFxUHpO53C8mTOA5sSFv_fSfKAoEv7wcim5UNmKS2XYBl0BbMGzKKu-yyjc8nHDXPEkuV3jSi4k2w6EphmETzQYmKD98QDP3jzyONBMXd3JquzDNWTAr7gUUPCOSre1BmFE2LHdwOIFck20u0GrNS3BSNiIQRPlhqhWQPyQSZjnqOuwPl2OBwk"/>
+</div>
+</div>
+<div class="pt-8 pb-6 px-5 flex-1 flex flex-col opacity-75">
+<h4 class="font-bold text-lg text-text-main mb-1">The Kitchen</h4>
+<p class="text-xs font-semibold text-accent uppercase tracking-wider">Servicios</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="mt-20 border-t border-slate-200 bg-white py-12">
+<div class="max-w-[1440px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-2">
+<div class="bg-primary/10 p-2 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-xl">shopping_basket</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-primary">MultiMarket</h1>
+</div>
+<nav class="flex items-center gap-8 text-sm font-medium text-secondary">
+<a class="hover:text-accent transition-colors" href="#">Política de Privacidad</a>
+<a class="hover:text-accent transition-colors" href="#">Términos de Servicio</a>
+<a class="hover:text-accent transition-colors" href="#">Centro de Ayuda</a>
+<a class="hover:text-accent transition-colors" href="#">Contacto</a>
+</nav>
+<div class="text-sm text-slate-500">
+            © 2024 MultiMarket. Todos los derechos reservados.
+        </div>
+</div>
+</footer>
+
+</body></html>

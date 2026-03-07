@@ -83,6 +83,7 @@ frontend/
 - **Evitar `any`**: usar `unknown` o tipos genéricos
 - **Interfaces sobre types** para estructuras que pueden extenderse
 - **Usar const** para referencias inmutables
+- **NO es necesario** que hagas un build en cada cambio que apliques
 
 ### Imports
 
