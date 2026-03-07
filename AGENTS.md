@@ -573,8 +573,8 @@ if (!store) notFound();
 - [x] Actualizar datos de la tienda
 - [x] CRUD Productos (Partner)
 - [x] CRUD Categorías de Productos (Partner)
-- [ ] CRUD Opciones de Delivery (Partner)
-- [ ] Pagina de perfil con los datos generales del perfil del partner
+- [x] CRUD Opciones de Delivery (Partner)
+- [x] Pagina de perfil con los datos generales del perfil del partner
 
 ### Fase 3: Aprobación de Partners (Admin)
 
@@ -584,15 +584,9 @@ if (!store) notFound();
 
 ### Fase 4: Web Pública
 
-- [ ] Landing page / Dashboard público
-- [ ] Página de aliados
-- [ ] Página de detalle de tienda
+- [ ] Home
+- [ ] Busqueda
+- [ ] Página de detalle de tienda/aliado
+- [ ] Página de detalle de producto
 - [ ] Carrito de compras
 - [ ] Integración WhatsApp para pedidos
-- [ ] Navegación mobile
-
-### Fase 5: Extras
-
-- [ ] Sistema de usuarios (clientes)
-- [ ] Historial de pedidos
-- [ ] Notificaciones
