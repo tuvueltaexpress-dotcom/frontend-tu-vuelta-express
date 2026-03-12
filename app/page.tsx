@@ -38,7 +38,7 @@ export default async function HomePage({
 
   return (
     <div className='min-h-screen bg-slate-50 dark:bg-slate-950'>
-      <main className='max-w-360 mx-auto px-6 lg:px-12 py-8 md:pb-24'>
+      <main className='max-w-360 mx-auto px-6 lg:px-12 py-8 pb-28 lg:pb-12'>
         <div className='md:hidden mb-6'>
           <StoreSearch />
         </div>
@@ -108,19 +108,19 @@ export default async function HomePage({
                           .map(Number);
                         const openTime = openH * 60 + openM;
                         const closeTime = closeH * 60 + closeM;
-                        return (
-                          currentTime >= openTime && currentTime <= closeTime
-                        );
+                        
+                        if (closeTime < openTime) {
+                          return currentTime >= openTime || currentTime <= closeTime;
+                        }
+                        return currentTime >= openTime && currentTime <= closeTime;
                       })()
                     : true;
 
-                return (
-                  <a
+                return isOpen ? (
+                  <Link
                     key={store.id}
-                    href={`/aliados/${store.id}`}
-                    className={`bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all flex flex-col group cursor-pointer ${
-                      !isOpen ? 'opacity-75' : ''
-                    }`}
+                    href={`/aliados/${store.slug || store.id}`}
+                    className='bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-lg transition-all flex flex-col group'
                   >
                     <div className='relative h-44'>
                       <img
@@ -128,17 +128,8 @@ export default async function HomePage({
                         className='w-full h-full object-cover'
                         src={store.coverImage || store.image}
                       />
-                      {!isOpen && (
-                        <div className='absolute inset-0 bg-slate-900/60 flex items-center justify-center backdrop-blur-[1px]'>
-                          <span className='text-white font-bold text-xl drop-shadow-md'>
-                            Cerrado
-                          </span>
-                        </div>
-                      )}
                       <div
-                        className={`absolute -bottom-6 left-4 w-16 h-16 rounded-xl border-4 border-white dark:border-slate-900 overflow-hidden bg-white dark:bg-slate-900 shadow-md z-10 ${
-                          !isOpen ? 'grayscale' : ''
-                        }`}
+                        className='absolute -bottom-6 left-4 w-16 h-16 rounded-xl border-4 border-white dark:border-slate-900 overflow-hidden bg-white dark:bg-slate-900 shadow-md z-10'
                       >
                         <img
                           alt={`Logo ${store.name}`}
@@ -155,7 +146,40 @@ export default async function HomePage({
                         {store.category?.name}
                       </p>
                     </div>
-                  </a>
+                  </Link>
+                ) : (
+                  <div
+                    key={store.id}
+                    className='bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 opacity-75 cursor-not-allowed flex flex-col'
+                  >
+                    <div className='relative h-44'>
+                      <img
+                        alt={`Fondo ${store.name}`}
+                        className='w-full h-full object-cover'
+                        src={store.coverImage || store.image}
+                      />
+                      <div className='absolute inset-0 bg-slate-900/60 flex items-center justify-center backdrop-blur-[1px]'>
+                        <span className='text-white font-bold text-xl drop-shadow-md'>
+                          Cerrado
+                        </span>
+                      </div>
+                      <div className='absolute -bottom-6 left-4 w-16 h-16 rounded-xl border-4 border-white dark:border-slate-900 overflow-hidden bg-white dark:bg-slate-900 shadow-md z-10 grayscale'>
+                        <img
+                          alt={`Logo ${store.name}`}
+                          className='w-full h-full object-cover'
+                          src={store.image}
+                        />
+                      </div>
+                    </div>
+                    <div className='pt-8 pb-6 px-5 flex-1 flex flex-col'>
+                      <h4 className='font-bold text-lg text-slate-950 dark:text-white mb-1'>
+                        {store.name}
+                      </h4>
+                      <p className='text-xs font-semibold text-sky-700 dark:text-sky-400 uppercase tracking-wider'>
+                        {store.category?.name}
+                      </p>
+                    </div>
+                  </div>
                 );
               })}
             </div>

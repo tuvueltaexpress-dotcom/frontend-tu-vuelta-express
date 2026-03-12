@@ -133,7 +133,7 @@ export default function PartnerCategoriasProductosPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight dark:text-white">Categorías de Productos</h1>
           <p className="text-muted-foreground dark:text-gray-400">
@@ -152,8 +152,8 @@ export default function PartnerCategoriasProductosPage() {
         </div>
       )}
 
-      <div className="rounded-md border dark:border-slate-800">
-        <table className="w-full">
+      <div className="rounded-md border dark:border-slate-800 overflow-x-auto">
+        <table className="w-full min-w-[500px]">
           <thead className="bg-muted/50 dark:bg-slate-800/50">
             <tr>
               <th className="text-left p-3 text-sm font-medium dark:text-gray-300">ID</th>

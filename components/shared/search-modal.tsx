@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { Search, X, Store, Package, ArrowRight } from "lucide-react";
-import { publicApi, type SearchResult, type Store as StoreType, type Product } from "@/lib/api";
+import { publicApi, type Store as StoreType, type Product } from "@/lib/api";
 
 export function SearchModal({
   isOpen,
@@ -14,13 +14,27 @@ export function SearchModal({
 }) {
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [results, setResults] = useState<SearchResult | null>(null);
+  const [results, setResults] = useState<{
+    stores: any[];
+    products: any[];
+  } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   const search = useCallback(async (searchQuery: string) => {
     if (!searchQuery.trim()) {
-      setResults(null);
+      try {
+        const [storesData, productsData] = await Promise.all([
+          publicApi.stores.list(1, 10),
+          publicApi.products.list(1, 10)
+        ]);
+        setResults({
+          stores: storesData.data,
+          products: productsData.data
+        });
+      } catch {
+        setResults(null);
+      }
       setIsLoading(false);
       return;
     }
@@ -28,7 +42,10 @@ export function SearchModal({
     setIsLoading(true);
     try {
       const data = await publicApi.search(searchQuery, "all", 1, 10);
-      setResults(data);
+      setResults({
+        stores: data.stores,
+        products: data.products
+      });
     } catch {
       setResults(null);
     } finally {
@@ -39,6 +56,11 @@ export function SearchModal({
   useEffect(() => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
+    }
+
+    if (isOpen && query.trim().length === 0) {
+      search("");
+      return;
     }
 
     if (query.trim()) {
@@ -55,7 +77,7 @@ export function SearchModal({
         clearTimeout(debounceRef.current);
       }
     };
-  }, [query, search]);
+  }, [query, search, isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -91,7 +113,7 @@ export function SearchModal({
   const products = results?.products ?? [];
   const hasStores = stores.length > 0;
   const hasProducts = products.length > 0;
-  const hasResults = hasQuery && (hasStores || hasProducts);
+  const hasResults = hasStores || hasProducts;
 
   return (
     <div className="fixed inset-0 z-[100]">
@@ -125,14 +147,15 @@ export function SearchModal({
             </div>
 
             <div className="max-h-[60vh] overflow-y-auto">
-              {!hasQuery ? (
+              {!hasQuery && !isLoading && !hasResults && (
                 <div className="p-8 text-center">
                   <Search className="h-12 w-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
                   <p className="text-slate-500 dark:text-slate-400">
                     Escribe para buscar tiendas y productos
                   </p>
                 </div>
-              ) : !hasResults && !isLoading ? (
+              )}
+              {hasQuery && !hasResults && !isLoading ? (
                 <div className="p-8 text-center">
                   <Package className="h-12 w-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
                   <p className="text-slate-500 dark:text-slate-400">
@@ -148,16 +171,13 @@ export function SearchModal({
                         <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                           Tiendas
                         </h3>
-                        <span className="text-xs text-slate-500">
-                          ({results?.pagination.stores.total ?? 0})
-                        </span>
                       </div>
 
                       <div className="space-y-2">
                         {stores.map((store) => (
                           <Link
                             key={store.id}
-                            href={`/aliados/${store.id}`}
+                            href={`/aliados/${store.slug || store.id}`}
                             onClick={onClose}
                             className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group"
                           >
@@ -167,9 +187,14 @@ export function SearchModal({
                               className="h-12 w-12 rounded-lg object-cover bg-slate-200"
                             />
                             <div className="flex-1 min-w-0">
-                              <p className="font-medium text-slate-900 dark:text-slate-100 truncate">
-                                {store.name}
-                              </p>
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium text-slate-900 dark:text-slate-100 truncate">
+                                  {store.name}
+                                </p>
+                                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 rounded">
+                                  Tienda
+                                </span>
+                              </div>
                               <p className="text-sm text-slate-500">
                                 {store.category?.name}
                               </p>
@@ -188,30 +213,32 @@ export function SearchModal({
                         <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                           Productos
                         </h3>
-                        <span className="text-xs text-slate-500">
-                          ({results?.pagination.products.total ?? 0})
-                        </span>
                       </div>
 
                       <div className="space-y-2">
                         {products.map((product) => (
                           <Link
                             key={product.id}
-                            href={`/aliados/${product.storeId}`}
+                            href={`/productos/${product.slug || product.id}`}
                             onClick={onClose}
                             className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer group"
                           >
                             <img
-                              src={product.images[0]}
+                              src={product.images?.[0] || '/placeholder.png'}
                               alt={product.title}
                               className="h-12 w-12 rounded-lg object-cover bg-slate-200"
                             />
                             <div className="flex-1 min-w-0">
-                              <p className="font-medium text-slate-900 dark:text-slate-100 truncate">
-                                {product.title}
-                              </p>
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium text-slate-900 dark:text-slate-100 truncate">
+                                  {product.title}
+                                </p>
+                                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 rounded">
+                                  Producto
+                                </span>
+                              </div>
                               <p className="text-sm text-slate-500 truncate">
-                                {product.store?.name}
+                                En {product.store?.name || 'Tienda'}
                               </p>
                             </div>
                             <p className="text-sm font-semibold text-sky-600 shrink-0">

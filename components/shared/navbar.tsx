@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useTheme } from "@/lib/use-theme";
 import { Button } from "@/components/ui/button";
 import { SearchModal } from "./search-modal";
+import { CartModal } from "./cart-modal";
 import { Search, ShoppingCart, Sun, Moon, Store } from "lucide-react";
+import { useCartStore } from "@/stores/useCartStore";
 
 const navLinks = [
   { href: "/", label: "Inicio" },
@@ -15,8 +17,12 @@ const navLinks = [
 
 export function Navbar() {
   const { theme, toggleTheme, mounted } = useTheme();
-  const [cartCount] = useState(0);
+  const items = useCartStore((s) => s.items);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const cartCount = items.length > 0 
+    ? items.reduce((sum, item) => sum + item.quantity, 0) 
+    : 0;
 
   if (!mounted) {
     return null;
@@ -74,19 +80,20 @@ export function Navbar() {
               )}
             </Button>
 
-            <Button
-              variant="ghost"
-              size="icon"
+            <Link
+              href="/carrito"
               className="cursor-pointer relative p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
               aria-label="Carrito de compras"
             >
-              <ShoppingCart className="h-5 w-5" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-sky-700 text-[10px] font-bold text-white ring-2 ring-white dark:ring-slate-950">
-                  {cartCount}
-                </span>
-              )}
-            </Button>
+              <div className="relative">
+                <ShoppingCart className="h-5 w-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-sky-700 text-[10px] font-bold text-white ring-2 ring-white dark:ring-slate-950">
+                    {cartCount}
+                  </span>
+                )}
+              </div>
+            </Link>
           </div>
         </div>
       </header>

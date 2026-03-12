@@ -114,10 +114,12 @@ export interface PartnerDashboardStats {
 export interface DashboardStats {
   storesCount: number
   productsCount: number
+  partnersCount: number
 }
 
 export interface Store {
   id: number
+  slug: string
   name: string
   image: string
   coverImage: string
@@ -286,6 +288,7 @@ export interface ProductCategory {
 
 export interface Product {
   id: number
+  slug?: string
   title: string
   price: number
   images: string[]
@@ -314,7 +317,7 @@ export const adminApi = {
   stores: {
     list: (page = 1, limit = 20, categoryId?: number) =>
       fetchAPI<PaginatedResponse<Store>>(`/stores?page=${page}&limit=${limit}${categoryId ? `&categoryId=${categoryId}` : ''}`),
-    get: (id: number) => fetchAPI<Store>(`/stores/${id}`),
+    get: (idOrSlug: string) => fetchAPI<Store>(`/stores/${idOrSlug}`),
     create: (data: { name: string; image: string; coverImage: string; categoryId: number; ha?: string; hc?: string }) =>
       fetchAPI<Store>("/stores", {
         method: "POST",
@@ -480,5 +483,21 @@ export const publicApi = {
     list: (page = 1, limit = 20) =>
       fetchPublicAPI<PaginatedResponse<StoreCategory>>(`/stores-categories?page=${page}&limit=${limit}`),
     get: (id: number) => fetchPublicAPI<StoreCategory>(`/stores-categories/${id}`),
+  },
+
+  products: {
+    list: (page = 1, limit = 20, storeId?: number) =>
+      fetchPublicAPI<PaginatedResponse<Product>>(`/products?page=${page}&limit=${limit}${storeId ? `&storeId=${storeId}` : ''}`),
+    get: (id: number) => fetchPublicAPI<Product>(`/products/${id}`),
+  },
+
+  productsCategories: {
+    list: (page = 1, limit = 20, storeId?: number) =>
+      fetchPublicAPI<PaginatedResponse<ProductCategory>>(`/products-categories?page=${page}&limit=${limit}${storeId ? `&storeId=${storeId}` : ''}`),
+  },
+
+  deliveryOptions: {
+    list: (page = 1, limit = 20) =>
+      fetchPublicAPI<PaginatedResponse<DeliveryOption>>(`/delivery-options?page=${page}&limit=${limit}`),
   },
 }

@@ -3,11 +3,17 @@
 import Link from "next/link";
 import { useTheme } from "@/lib/use-theme";
 import { Home, ShoppingCart, Moon, Sun } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useCartStore } from "@/stores/useCartStore";
 
 export function BottomNav() {
   const { theme, toggleTheme, mounted } = useTheme();
-  const [cartCount] = useState(3);
+  const items = useCartStore((s) => s.items);
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    setCartCount(items.reduce((sum, item) => sum + item.quantity, 0));
+  }, [items]);
 
   if (!mounted) {
     return null;
@@ -23,15 +29,20 @@ export function BottomNav() {
         
         <div className="w-[1px] h-6 bg-slate-200 dark:bg-slate-800"></div>
         
-        <button className="flex flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500 flex-1 h-full relative cursor-pointer">
+        <Link 
+          href="/carrito"
+          className="flex flex-col items-center justify-center gap-1 text-sky-700 dark:text-sky-400 flex-1 h-full relative"
+        >
           <div className="relative">
             <ShoppingCart className="h-6 w-6" />
-            <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-sky-700 text-[9px] font-bold text-white">
-              {cartCount}
-            </span>
+            {cartCount > 0 && (
+              <span className="absolute -top-1.5 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-sky-700 text-[9px] font-bold text-white">
+                {cartCount}
+              </span>
+            )}
           </div>
           <span className="text-[10px] font-medium">Carrito</span>
-        </button>
+        </Link>
 
         <div className="w-[1px] h-6 bg-slate-200 dark:bg-slate-800"></div>
         

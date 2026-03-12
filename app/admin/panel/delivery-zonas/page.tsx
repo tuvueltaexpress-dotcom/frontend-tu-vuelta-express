@@ -179,8 +179,8 @@ export default function DeliveryZonasPage() {
         </Button>
       </div>
 
-      <div className="rounded-md border dark:border-slate-800">
-        <table className="w-full">
+      <div className="rounded-md border dark:border-slate-800 overflow-x-auto">
+        <table className="w-full min-w-[700px]">
           <thead className="bg-muted/50 dark:bg-slate-800/50">
             <tr>
               <th className="text-left p-3 text-sm font-medium dark:text-gray-300">ID</th>

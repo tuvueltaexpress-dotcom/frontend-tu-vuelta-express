@@ -1,33 +1,57 @@
-import { adminApi } from "@/lib/api"
-import { Package, Store, TrendingUp } from "lucide-react"
+'use client'
 
-export default async function DashboardPage() {
-  let stats = { storesCount: 0, productsCount: 0 }
+import { useState, useEffect } from 'react'
+import { adminApi } from '@/lib/api'
+import { Package, Store, TrendingUp } from 'lucide-react'
 
-  try {
-    stats = await adminApi.dashboard()
-  } catch {
-    // Use default values on error
+interface DashboardStats {
+  storesCount: number
+  productsCount: number
+  partnersCount: number
+}
+
+export default function DashboardPage() {
+  const [stats, setStats] = useState<DashboardStats>({
+    storesCount: 0,
+    productsCount: 0,
+    partnersCount: 0,
+  })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    loadDashboard()
+  }, [])
+
+  async function loadDashboard() {
+    try {
+      setLoading(true)
+      const data = await adminApi.dashboard()
+      setStats(data)
+    } catch (error) {
+      console.error('Error loading dashboard:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const statCards = [
     {
-      title: "Aliados",
-      value: stats.storesCount,
+      title: 'Aliados',
+      value: stats.partnersCount,
       icon: Store,
-      color: "bg-blue-500",
+      color: 'bg-blue-500',
     },
     {
-      title: "Productos",
+      title: 'Productos',
       value: stats.productsCount,
       icon: Package,
-      color: "bg-green-500",
+      color: 'bg-green-500',
     },
     {
-      title: "Pedidos",
+      title: 'Pedidos',
       value: 0,
       icon: TrendingUp,
-      color: "bg-purple-500",
+      color: 'bg-purple-500',
     },
   ]
 
@@ -35,7 +59,9 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold dark:text-white">Dashboard</h1>
-        <p className="text-muted-foreground dark:text-gray-400 mt-1">Resumen de tu plataforma</p>
+        <p className="text-muted-foreground dark:text-gray-400 mt-1">
+          Resumen de tu plataforma
+        </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -53,7 +79,13 @@ export default async function DashboardPage() {
                   <p className="text-sm font-medium text-muted-foreground dark:text-gray-300">
                     {card.title}
                   </p>
-                  <p className="text-2xl font-bold dark:text-white">{card.value}</p>
+                  {loading ? (
+                    <div className="h-8 w-16 bg-muted animate-pulse rounded" />
+                  ) : (
+                    <p className="text-2xl font-bold dark:text-white">
+                      {card.value}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

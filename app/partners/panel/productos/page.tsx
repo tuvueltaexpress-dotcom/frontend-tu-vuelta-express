@@ -241,21 +241,21 @@ export default function PartnerProductosPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight dark:text-white">Productos</h1>
           <p className="text-muted-foreground dark:text-gray-400">
             Gestiona el catálogo de productos de tu tienda
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => setCategoryDialogOpen(true)}>
             <FolderPlus className="h-4 w-4 mr-2" />
-            Nueva Categoría
+            <span className=" sm:inline">Nueva Categoría</span>
           </Button>
           <Button onClick={openCreateDialog}>
             <Plus className="h-4 w-4 mr-2" />
-            Nuevo Producto
+            <span className=" sm:inline">Nuevo Producto</span>
           </Button>
         </div>
       </div>
