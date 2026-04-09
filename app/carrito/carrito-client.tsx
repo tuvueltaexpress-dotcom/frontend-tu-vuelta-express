@@ -295,7 +295,7 @@ export function CarritoClient({ deliveryOptions: initialDeliveryOptions }: Carri
         </div>
 
         {items.length > 0 && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 pb-6 sm:pb-4 pt-3 sm:pt-4 px-3 sm:px-4 z-50 lg:hidden">
+          <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 pb-22 sm:pb-4 pt-3 sm:pt-4 px-3 sm:px-4 z-50 lg:hidden">
             <div className="max-w-lg mx-auto space-y-3 sm:space-y-4">
               <div className="space-y-1.5 sm:space-y-2 px-1">
                 <div className="flex justify-between text-sm">
