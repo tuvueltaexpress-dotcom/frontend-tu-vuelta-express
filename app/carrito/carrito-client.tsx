@@ -325,7 +325,7 @@ export function CarritoClient({ deliveryOptions: initialDeliveryOptions }: Carri
       {showDeliveryModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center md:items-center justify-center" onClick={() => setShowDeliveryModal(false)}>
           <div 
-            className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-2xl md:rounded-2xl max-h-[80vh] overflow-hidden" 
+            className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl md:rounded-2xl max-h-[80vh] overflow-hidden" 
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
