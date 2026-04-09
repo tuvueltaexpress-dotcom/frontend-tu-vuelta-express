@@ -591,3 +591,13 @@ if (!store) notFound();
 - [ ] Página de detalle de producto
 - [ ] Carrito de compras
 - [ ] Integración WhatsApp para pedidos
+
+---
+
+## Paleta de Colores
+
+| Color     | Código   | Uso                                    |
+| --------- | -------- | -------------------------------------- |
+| Azul      | #03114D  | Primary, sidebar-primary, botones     |
+| Gris      | #929AA2  | Secondary, elementos secundarios      |
+| Naranja   | #E05E18  | Accent, CTAs, elementos destacados     |

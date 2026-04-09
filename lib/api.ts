@@ -302,6 +302,8 @@ export interface Product {
 }
 
 export interface DeliveryOption {
+  price?: number
+  description?: string
   id: number
   name: string
   fee: number
@@ -476,7 +478,7 @@ export const publicApi = {
   stores: {
     list: (page = 1, limit = 20, categoryId?: number) =>
       fetchPublicAPI<PaginatedResponse<Store>>(`/stores?page=${page}&limit=${limit}${categoryId ? `&categoryId=${categoryId}` : ''}`),
-    get: (id: number) => fetchPublicAPI<Store>(`/stores/${id}`),
+    get: (idOrSlug: number | string) => fetchPublicAPI<Store>(`/stores/${idOrSlug}`),
   },
   
   storesCategories: {
@@ -488,7 +490,7 @@ export const publicApi = {
   products: {
     list: (page = 1, limit = 20, storeId?: number) =>
       fetchPublicAPI<PaginatedResponse<Product>>(`/products?page=${page}&limit=${limit}${storeId ? `&storeId=${storeId}` : ''}`),
-    get: (id: number) => fetchPublicAPI<Product>(`/products/${id}`),
+    get: (idOrSlug: number | string) => fetchPublicAPI<Product>(`/products/${idOrSlug}`),
   },
 
   productsCategories: {
@@ -497,7 +499,9 @@ export const publicApi = {
   },
 
   deliveryOptions: {
-    list: (page = 1, limit = 20) =>
-      fetchPublicAPI<PaginatedResponse<DeliveryOption>>(`/delivery-options?page=${page}&limit=${limit}`),
+    list: (page = 1, limit = 20, storeId?: number) =>
+      fetchPublicAPI<PaginatedResponse<DeliveryOption>>(`/delivery-options?page=${page}&limit=${limit}${storeId ? `&storeId=${storeId}` : ''}`),
+    getByStore: (storeId: number) =>
+      fetchPublicAPI<PaginatedResponse<DeliveryOption>>(`/delivery-options/store/${storeId}`),
   },
 }

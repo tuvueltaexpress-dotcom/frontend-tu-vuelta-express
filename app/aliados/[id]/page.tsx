@@ -23,7 +23,7 @@ async function getStoreProducts(storeId: number) {
 async function getStoreCategories(storeId: number) {
   try {
     const data = await publicApi.productsCategories.list(1, 50, storeId);
-    return data.data;
+    return data.data.filter((cat: ProductCategoryType) => cat.storeId === storeId);
   } catch {
     return [];
   }

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, MapPin, ChevronDown, Minus, Plus, X, ShoppingBag, MessageSquare, Check, Store } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/stores/useCartStore';
+import { publicApi } from '@/lib/api';
 import type { DeliveryOption } from '@/lib/api';
 
 interface DeliveryOptionWithPrice extends DeliveryOption {
@@ -16,7 +17,7 @@ interface CarritoClientProps {
   deliveryOptions: DeliveryOption[];
 }
 
-export function CarritoClient({ deliveryOptions }: CarritoClientProps) {
+export function CarritoClient({ deliveryOptions: initialDeliveryOptions }: CarritoClientProps) {
   const router = useRouter();
   const items = useCartStore((s) => s.items);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
@@ -24,15 +25,33 @@ export function CarritoClient({ deliveryOptions }: CarritoClientProps) {
   const total = useCartStore((s) => s.total);
   const [instructions, setInstructions] = useState('');
   const [showDeliveryModal, setShowDeliveryModal] = useState(false);
-  const [selectedDelivery, setSelectedDelivery] = useState<DeliveryOptionWithPrice | null>(
-    deliveryOptions.length > 0 ? {
-      ...deliveryOptions[0],
-      price: Number(deliveryOptions[0].price) || Number(deliveryOptions[0].fee) || 0,
-    } : null
-  );
+  const [deliveryOptions, setDeliveryOptions] = useState<DeliveryOption[]>(initialDeliveryOptions);
+  const [selectedDelivery, setSelectedDelivery] = useState<DeliveryOptionWithPrice | null>(null);
   const [expandedStore, setExpandedStore] = useState<number | null>(
     items.length > 0 ? items[0].storeId : null
   );
+
+  useEffect(() => {
+    const loadDeliveryOptions = async () => {
+      if (items.length > 0) {
+        const storeId = items[0].storeId;
+        try {
+          const response = await publicApi.deliveryOptions.getByStore(storeId);
+          const options = response.data || response;
+          setDeliveryOptions(options);
+          if (options.length > 0 && !selectedDelivery) {
+            setSelectedDelivery({
+              ...options[0],
+              price: Number(options[0].price) || Number(options[0].fee) || 0,
+            });
+          }
+        } catch {
+          setDeliveryOptions([]);
+        }
+      }
+    };
+    loadDeliveryOptions();
+  }, [items.length, items[0]?.storeId]);
 
   const stores = [...new Map(items.map(item => [item.storeId, item])).values()].map(
     item => item.storeId
@@ -304,7 +323,7 @@ export function CarritoClient({ deliveryOptions }: CarritoClientProps) {
       </main>
 
       {showDeliveryModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center" onClick={() => setShowDeliveryModal(false)}>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center md:items-center justify-center" onClick={() => setShowDeliveryModal(false)}>
           <div 
             className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-t-2xl md:rounded-2xl max-h-[80vh] overflow-hidden" 
             onClick={(e) => e.stopPropagation()}

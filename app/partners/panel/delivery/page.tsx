@@ -154,10 +154,7 @@ export default function PartnerDeliveryPage() {
             Configura las opciones de entrega disponibles para tus clientes
           </p>
         </div>
-        <Button onClick={openCreateDialog}>
-          <Plus className="h-4 w-4 mr-2" />
-          Nueva Opción
-        </Button>
+
       </div>
 
       {error && (
@@ -188,10 +185,7 @@ export default function PartnerDeliveryPage() {
                   Agrega las opciones de entrega disponibles para tus clientes.
                 </p>
               </div>
-              <Button onClick={openCreateDialog}>
-                <Plus className="h-4 w-4 mr-2" />
-                Crear opción de delivery
-              </Button>
+
             </div>
           </CardContent>
         </Card>
@@ -212,22 +206,7 @@ export default function PartnerDeliveryPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => openEditDialog(option)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDelete(option)}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
+
                 </div>
                 <p className="text-sm text-muted-foreground dark:text-gray-400 mt-2">
                   Creado el {new Date(option.createdAt).toLocaleDateString('es-ES')}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { partnerApi, type ProductCategory } from '@/lib/api'
+import { partnerApi, type ProductCategory, authApi } from '@/lib/api'
 import { useToast } from '@/components/ui/toast'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -47,8 +47,16 @@ export default function PartnerCategoriasProductosPage() {
   async function loadCategories() {
     try {
       setLoading(true)
-      const data = await partnerApi.productsCategories.list()
-      setCategories(data)
+      const [storeData, categories] = await Promise.all([
+        authApi.partners.getDashboard(),
+        partnerApi.productsCategories.list(),
+      ])
+      if (storeData.store) {
+        const storeId = storeData.store.id
+        setCategories(categories.filter(cat => cat.storeId === storeId))
+      } else {
+        setCategories([])
+      }
     } catch (err) {
       addToast(err instanceof Error ? err.message : 'Error al cargar categorías', 'error')
     } finally {
