@@ -65,7 +65,7 @@ export function CarritoClient({ deliveryOptions: initialDeliveryOptions }: Carri
   const finalTotal = productsTotal + deliveryPrice;
 
   const handleWhatsAppOrder = () => {
-    const phone = '593999999999';
+    const phone = '+584124676968';
     let message = `*Nuevo Pedido - Tu Vuelta Express*\n\n`;
     
     if (selectedDelivery) {
